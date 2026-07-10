@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coppervane Plumbing — Austin, TX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #f4efe6;
+    --panel:   #fffdf8;
+    --panel-2: #f7f1e6;
+    --line:    #e4dccb;
+    --line-2:  #ede6d7;
+    --ink:     #241f18;
+    --soft:    #6a5f50;
+    --faint:   #9a8f7d;
+    --navy:    #14506b;
+    --navy-2:  #0e3d52;
+    --copper:  #bf6a33;
+    --copper-2:#a1541f;
+    --gold:    #e0a53f;
+    --sans:    "Archivo", system-ui, sans-serif;
+    --serif:   "Fraunces", Georgia, serif;
+    --radius:  14px;
+  }
+  :root[data-theme="dark"] {
+    --bg:      #12171b;
+    --panel:   #1a2127;
+    --panel-2: #161d23;
+    --line:    #2b3740;
+    --line-2:  #202a31;
+    --ink:     #eef2f2;
+    --soft:    #9fb0b9;
+    --faint:   #66757e;
+    --navy:    #4aa3c4;
+    --navy-2:  #3a8aa8;
+    --copper:  #d98a52;
+    --copper-2:#bf6a33;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans); background: var(--bg); color: var(--ink);
+    line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden;
+    transition: background .35s, color .35s;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
+
+  /* ---- top utility bar ---- */
+  .util { background: var(--navy); color: #eaf3f7; font-size: .82rem; }
+  .util .wrap { display: flex; justify-content: space-between; align-items: center; height: 40px; gap: 12px; }
+  .util a { color: #fff; text-decoration: none; font-weight: 600; }
+  .util .lic { color: #b9d6e2; letter-spacing: .02em; }
+  @media (max-width: 620px){ .util .lic { display: none; } }
+
+  /* ---- header / tabs ---- */
+  header { border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 40;
+    background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); }
+  .bar { display: flex; align-items: center; justify-content: space-between; height: 72px; gap: 12px; }
+  .brand { display: flex; align-items: center; gap: 11px; font-weight: 800; font-size: 1.2rem; letter-spacing: -.02em; }
+  .brand em { color: var(--copper); font-style: normal; }
+  .logo { width: 30px; height: 30px; border-radius: 8px; flex: none; position: relative;
+    background: linear-gradient(135deg, var(--copper), var(--copper-2)); }
+  .logo::before, .logo::after { content:""; position:absolute; background: var(--panel); border-radius: 2px; }
+  .logo::before { inset: 13px 6px; } .logo::after { inset: 6px 13px; }
+  nav { display: flex; gap: 2px; }
+  .tab { font-family: var(--sans); font-size: .92rem; font-weight: 600; color: var(--soft);
+    background: none; border: none; cursor: pointer; padding: 8px 14px; border-radius: 8px; transition: .18s; }
+  .tab:hover { color: var(--ink); }
+  .tab.active { color: var(--navy); background: color-mix(in srgb, var(--navy) 10%, transparent); }
+  .theme { background: none; border: none; color: var(--soft); cursor: pointer; font-size: 1.05rem; padding: 6px; }
+  .theme:hover { color: var(--copper); }
+  @media (max-width: 520px){ .brand small { display:none; } .tab { padding: 8px 10px; } }
+
+  .view { display: none; animation: fade .4s ease; }
+  .view.active { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  section.pad { padding-top: 56px; padding-bottom: 84px; }
+
+  /* ---- reviews / trust line ---- */
+  .reviews { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 22px; font-size: .92rem; color: var(--soft); }
+  .stars { color: var(--gold); letter-spacing: 1px; font-size: 1rem; }
+  .reviews b { color: var(--ink); font-weight: 700; }
+  .dot { color: var(--faint); }
+
+  h1 { font-weight: 800; letter-spacing: -.03em; line-height: 1.03; font-size: clamp(2.2rem, 6vw, 3.3rem); }
+  h1 .u { color: var(--copper); }
+  .sub { color: var(--soft); font-size: 1.08rem; margin-top: 16px; max-width: 46ch; }
+
+  /* ---- estimator card ---- */
+  .estimator { margin-top: 34px; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 18px; padding: 28px; box-shadow: 0 18px 40px -28px rgba(20,80,107,.4); }
+  .est-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+  .est-head h2 { font-size: 1.15rem; font-weight: 700; letter-spacing: -.01em; }
+  .est-head span { font-size: .82rem; color: var(--faint); font-weight: 600; }
+
+  .inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px){ .inputs { grid-template-columns: 1fr; } }
+  .fld { min-width: 0; }
+  .fld label { display: block; font-size: .86rem; font-weight: 600; color: var(--soft); margin-bottom: 7px; }
+  .fld input { width: 100%; font-family: var(--serif); font-weight: 500; font-style: italic; font-size: 1.45rem; color: var(--ink);
+    background: var(--panel-2); border: 1px solid var(--line); border-radius: 11px; padding: 13px 15px; transition: border-color .2s, box-shadow .2s; }
+  .fld input::placeholder { color: var(--faint); font-family: var(--serif); font-style: italic; font-size: 1.15rem; }
+  .fld input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px color-mix(in srgb, var(--navy) 18%, transparent); }
+  .zip { max-width: 240px; }
+
+  .btn { margin-top: 20px; display: inline-flex; align-items: center; gap: 9px; cursor: pointer;
+    font-family: var(--sans); font-size: 1rem; font-weight: 700; color: #fff;
+    background: var(--copper); border: none; border-radius: 11px; padding: 15px 28px; transition: transform .12s, background .2s; }
+  .btn:hover { background: var(--copper-2); transform: translateY(-1px); }
+  .btn.navy { background: var(--navy); } .btn.navy:hover { background: var(--navy-2); }
+
+  .price { margin-top: 26px; border-top: 1px solid var(--line-2); padding-top: 24px; overflow: hidden;
+    max-height: 0; opacity: 0; transition: max-height .5s, opacity .5s; }
+  .price.show { max-height: 520px; opacity: 1; }
+  .price .region { color: var(--copper); font-weight: 700; font-size: .8rem; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 4px; }
+  .price .num { font-family: var(--serif); font-weight: 500; letter-spacing: -.03em; line-height: 1; font-size: clamp(2.8rem, 10vw, 4.3rem); margin: 2px 0 8px; }
+  .price .num .c { color: var(--copper); font-size: .4em; vertical-align: top; }
+  .ast { color: var(--copper); font-size: .42em; vertical-align: super; font-family: var(--sans); font-weight: 700; }
+  .price .rng { color: var(--soft); font-size: .95rem; } .price .rng b { color: var(--ink); font-weight: 700; }
+  .price .loc { color: var(--copper); }
+
+  /* optional "send me a copy" — appears AFTER the price, secondary */
+  .copy-row { margin-top: 22px; padding: 16px; background: var(--panel-2); border: 1px dashed var(--line);
+    border-radius: 11px; display: none; }
+  .copy-row.show { display: block; }
+  .copy-row .q { font-size: .95rem; font-weight: 600; margin-bottom: 4px; }
+  .copy-row .h { font-size: .82rem; color: var(--faint); margin-bottom: 12px; }
+  .copy-flex { display: flex; gap: 10px; flex-wrap: wrap; }
+  .copy-flex input { flex: 1; min-width: 180px; font-family: var(--sans); font-size: .95rem; font-style: normal;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 9px; padding: 11px 13px; color: var(--ink); }
+  .copy-flex input::placeholder { font-family: var(--sans); font-style: normal; font-size: .95rem; }
+  .copy-flex input:focus { outline: none; border-color: var(--navy); }
+  .copy-flex button { font-family: var(--sans); font-weight: 700; font-size: .92rem; color: var(--navy);
+    background: none; border: 1px solid var(--navy); border-radius: 9px; padding: 0 20px; cursor: pointer; transition: .2s; }
+  .copy-flex button:hover { background: var(--navy); color: #fff; }
+  .sent { color: var(--navy); font-weight: 600; font-size: .92rem; }
+
+  .footnote { margin-top: 16px; color: var(--faint); font-size: .8rem; line-height: 1.5; }
+  .footnote .s { color: var(--copper); font-weight: 700; }
+
+  /* ---- trust strip ---- */
+  .trust { margin-top: 34px; display: flex; flex-wrap: wrap; gap: 10px 26px; align-items: center; }
+  .trust span { display: inline-flex; align-items: center; gap: 8px; font-size: .9rem; font-weight: 600; color: var(--soft); }
+  .trust span::before { content: "✓"; color: var(--navy); font-weight: 800; }
+
+  /* ---- testimonial ---- */
+  .quote { margin-top: 44px; border-left: 3px solid var(--copper); padding: 6px 0 6px 22px; }
+  .quote p { font-family: var(--serif); font-style: italic; font-size: 1.3rem; line-height: 1.4; color: var(--ink); }
+  .quote .who { font-family: var(--sans); font-style: normal; font-size: .88rem; font-weight: 600; color: var(--soft); margin-top: 12px; }
+  .quote .who .n { color: var(--ink); } .quote .who .stars { font-size: .85rem; }
+
+  /* ---- about: founders ---- */
+  .eyebrow { color: var(--copper); font-size: .78rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 16px; }
+  .founders { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 36px; }
+  @media (max-width: 560px){ .founders { grid-template-columns: 1fr; } }
+  figure.founder { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+  .photo { aspect-ratio: 4/5; background: var(--panel-2); position: relative; display: grid; place-items: center; }
+  .photo svg { width: 100%; height: 100%; display: block; }
+  .photo .hint { position: absolute; bottom: 12px; left: 0; right: 0; text-align: center; font-size: .72rem;
+    font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); }
+  figcaption { padding: 16px 18px 20px; }
+  figcaption b { font-size: 1.1rem; font-weight: 700; display: block; }
+  figcaption span { color: var(--soft); font-size: .86rem; }
+  figcaption p { color: var(--soft); font-size: .9rem; margin-top: 10px; line-height: 1.55; }
+
+  .prose { max-width: 58ch; }
+  .prose p { color: var(--soft); font-size: 1.05rem; margin-top: 18px; }
+  .prose p strong { color: var(--ink); font-weight: 700; }
+  .stats { display: flex; gap: 38px; margin-top: 40px; flex-wrap: wrap; }
+  .stats div b { font-size: 1.8rem; font-weight: 800; display: block; letter-spacing: -.02em; }
+  .stats div span { font-size: .78rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--faint); }
+
+  /* ---- contact ---- */
+  .contact-row { display: flex; align-items: baseline; gap: 16px; padding: 15px 0; border-bottom: 1px solid var(--line-2); }
+  .contact-row .k { font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); min-width: 84px; }
+  .contact-row .v { font-size: 1.05rem; } .contact-row a { color: var(--copper); text-decoration: none; font-weight: 600; }
+  .contact-row a:hover { text-decoration: underline; }
+
+  footer { border-top: 1px solid var(--line); margin-top: 20px; }
+  footer .wrap { display: flex; justify-content: space-between; align-items: center; min-height: 64px; flex-wrap: wrap; gap: 8px; padding-top: 14px; padding-bottom: 14px; }
+  footer small { font-size: .78rem; color: var(--faint); }
+  .demo { color: var(--copper); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="util">
+  <div class="wrap">
+    <span>📍 Serving Greater Austin &amp; the Hill Country</span>
+    <span class="lic">Licensed · Insured · Bonded · TX Lic #CV-0042198</span>
+  </div>
+</div>
+
+<header>
+  <div class="wrap bar">
+    <div class="brand"><span class="logo"></span>Copper<em>vane</em></div>
+    <nav>
+      <button class="tab active" data-view="estimate">Estimate</button>
+      <button class="tab" data-view="about">About</button>
+      <button class="tab" data-view="contact">Contact</button>
+    </nav>
+    <a href="tel:+15125550142" class="tab" style="color:var(--copper)">📞 (512) 555-0142</a>
+    <button class="theme" id="themeBtn" title="Toggle light/dark">☾</button>
+  </div>
+</header>
+
+<!-- ============ ESTIMATE ============ -->
+<div class="view active" id="estimate">
+  <section class="wrap pad">
+    <div class="reviews">
+      <span class="stars">★★★★★</span>
+      <b>4.9</b> on Google <span class="dot">·</span> 312 reviews <span class="dot">·</span> Family-run since 1998
+    </div>
+    <h1>Honest plumbing,<br><span class="u">upfront pricing.</span></h1>
+    <p class="sub">Repipes, water lines and new-construction rough-in across Austin. Get a real ballpark in seconds — no calls, no pressure.</p>
+
+    <div class="estimator">
+      <div class="est-head"><h2>Estimate your job</h2><span>Free · no obligation</span></div>
+
+      <!-- step 1 -->
+      <div class="inputs">
+        <div class="fld"><label for="sqft">Square footage</label>
+          <input type="text" id="sqft" inputmode="numeric" placeholder="2,000"></div>
+        <div class="fld"><label for="baths">Bathrooms</label>
+          <input type="text" id="baths" inputmode="numeric" placeholder="2"></div>
+      </div>
+      <button class="btn" id="calcBtn">Show average price</button>
+
+      <div class="price" id="avgPrice">
+        <div class="num"><span class="c">$</span><span id="avgNum">0</span><span class="ast">*</span></div>
+        <div class="rng">Typical range <b id="avgLo">$0</b> – <b id="avgHi">$0</b> across the U.S.</div>
+      </div>
+
+      <!-- step 2 (revealed) -->
+      <div id="step2" style="display:none;">
+        <div class="fld zip" style="margin-top:24px;"><label for="zip">Your ZIP code — for an exact local price</label>
+          <input type="text" id="zip" inputmode="numeric" maxlength="5" placeholder="78704"></div>
+        <button class="btn navy" id="localBtn">Get local price →</button>
+
+        <div class="price" id="locPrice">
+          <div class="region" id="locRegion"></div>
+          <div class="num"><span class="c">$</span><span id="locNum" class="loc">0</span><span class="ast">*</span></div>
+          <div class="rng">Local range <b id="locLo">$0</b> – <b id="locHi">$0</b></div>
+
+          <!-- OPTIONAL, post-value: not a gate -->
+          <div class="copy-row" id="copyRow">
+            <div class="q">Want this quote in writing?</div>
+            <div class="h">Totally optional — we'll text or email it so you have it handy. No spam, ever.</div>
+            <div class="copy-flex" id="copyFlex">
+              <input type="text" id="contact" placeholder="Email or phone (optional)">
+              <button id="sendBtn">Send it</button>
+            </div>
+            <div class="sent" id="sentMsg" style="display:none;"></div>
+          </div>
+        </div>
+      </div>
+
+      <p class="footnote"><span class="s">*</span> Estimate only. Your final price is set after a free on-site visit and can shift with site conditions, pipe material and access.</p>
+    </div>
+
+    <div class="trust">
+      <span>Same-day answers</span>
+      <span>Upfront, flat pricing</span>
+      <span>2-year workmanship warranty</span>
+      <span>Financing available</span>
+    </div>
+
+    <blockquote class="quote">
+      <p>“They repiped our whole 1960s house in two days and came in $400 under the quote. Ray walked me through every step.”</p>
+      <div class="who"><span class="stars">★★★★★</span> &nbsp;<span class="n">Marcus R.</span> — Hyde Park, Austin</div>
+    </blockquote>
+  </section>
+</div>
+
+<!-- ============ ABOUT ============ -->
+<div class="view" id="about">
+  <section class="wrap pad">
+    <div class="eyebrow">The people behind the trucks</div>
+    <h1>Two founders,<br>one standard.</h1>
+    <p class="sub">Coppervane has been family-run since 1998 — no call centers, no upsells, just clean work and a price you can trust.</p>
+
+    <div class="founders">
+      <!-- FOUNDER 1 — to add a real photo: replace the <svg>…</svg> below with
+           <img src="ray.jpg" alt="Ray Mercer" style="width:100%;height:100%;object-fit:cover;"> -->
+      <figure class="founder">
+        <div class="photo">
+          <svg viewBox="0 0 320 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <rect width="320" height="400" fill="#e9e0cf"/>
+            <circle cx="160" cy="150" r="66" fill="#cbbfa6"/>
+            <path d="M40 400 C60 280 120 250 160 250 C200 250 260 280 280 400 Z" fill="#cbbfa6"/>
+          </svg>
+          <div class="hint">Photo placeholder</div>
+        </div>
+        <figcaption>
+          <b>Ray Mercer</b><span>Co-Founder · Master Plumber</span>
+          <p>Started Coppervane out of a single truck after 12 years in the trade. Still runs a wrench on the tough jobs.</p>
+        </figcaption>
+      </figure>
+
+      <!-- FOUNDER 2 — same idea: swap the <svg> for your <img>. -->
+      <figure class="founder">
+        <div class="photo">
+          <svg viewBox="0 0 320 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <rect width="320" height="400" fill="#e4e6df"/>
+            <circle cx="160" cy="150" r="66" fill="#bfc6b6"/>
+            <path d="M40 400 C60 280 120 250 160 250 C200 250 260 280 280 400 Z" fill="#bfc6b6"/>
+          </svg>
+          <div class="hint">Photo placeholder</div>
+        </div>
+        <figcaption>
+          <b>Dana Mercer</b><span>Co-Founder · Operations</span>
+          <p>Keeps the six crews scheduled and every quote honest. If you call the shop, you'll probably talk to Dana.</p>
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="stats">
+      <div><b>12,400+</b><span>Installs</span></div>
+      <div><b>4.9★</b><span>Google rating</span></div>
+      <div><b>6</b><span>Crews</span></div>
+      <div><b>2-yr</b><span>Warranty</span></div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ CONTACT ============ -->
+<div class="view" id="contact">
+  <section class="wrap pad">
+    <div class="eyebrow">Contact</div>
+    <h1>Talk to a real<br>plumber today.</h1>
+    <div class="prose" style="max-width:100%;">
+      <div class="contact-row"><span class="k">Phone</span><span class="v"><a href="tel:+15125550142">(512) 555-0142</a></span></div>
+      <div class="contact-row"><span class="k">Email</span><span class="v"><a href="mailto:hello@coppervane.example">hello@coppervane.example</a></span></div>
+      <div class="contact-row"><span class="k">Shop</span><span class="v">1420 Basin Rd, Austin, TX 78704</span></div>
+      <div class="contact-row"><span class="k">Hours</span><span class="v">Mon–Sat · 7am – 7pm · Emergency 24/7</span></div>
+      <a class="btn" href="tel:+15125550142" style="margin-top:32px;">📞 Call for a free walkthrough</a>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap">
+    <small>© 1998–2026 Coppervane Plumbing Co. · Austin, TX · TX Lic #CV-0042198</small>
+    <small class="demo">Demonstration page · figures illustrative</small>
+  </div>
+</footer>
+
+<script>
+/* theme */
+const root = document.documentElement, tBtn = document.getElementById('themeBtn');
+function setTheme(m){ root.setAttribute('data-theme', m); tBtn.textContent = m === 'light' ? '☾' : '☀︎'; }
+tBtn.onclick = () => setTheme(root.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+setTheme('light');
+
+/* tabs */
+document.querySelectorAll('.tab[data-view]').forEach(t => t.onclick = () => {
+  document.querySelectorAll('.tab[data-view]').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
+  t.classList.add('active');
+  document.getElementById(t.dataset.view).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+/* pricing */
+const RATE_SQFT = 4.25, PER_BATH = 2900, BASE = 850;
+const ZIP3 = {
+  "941":["San Francisco, CA",1.62],"940":["Peninsula, CA",1.55],"900":["Los Angeles, CA",1.44],
+  "951":["San Jose, CA",1.58],"981":["Seattle, WA",1.38],"100":["Manhattan, NY",1.66],
+  "112":["Brooklyn, NY",1.52],"021":["Boston, MA",1.47],"200":["Washington, DC",1.42],
+  "606":["Chicago, IL",1.31],"331":["Miami, FL",1.18],"787":["Austin, TX",1.16],
+  "770":["Houston, TX",1.12],"852":["Phoenix, AZ",1.08],"802":["Denver, CO",1.22],
+  "891":["Las Vegas, NV",1.12],"300":["Atlanta, GA",1.09],"370":["Nashville, TN",1.07],"972":["Portland, OR",1.30] };
+const REGION1 = { "0":["Northeast",1.26],"1":["Northeast",1.23],"2":["Mid-Atlantic",1.05],"3":["Southeast",1.02],
+  "4":["Midwest",0.98],"5":["Upper Midwest",0.97],"6":["Plains",0.99],"7":["South Central",1.03],"8":["Mountain West",1.11],"9":["West Coast",1.33] };
+function lookupZip(z){ const k=z.slice(0,3); if (ZIP3[k]) return { label:ZIP3[k][0], index:ZIP3[k][1] };
+  const r=REGION1[z[0]]; return { label:r?r[0]:"United States", index:r?r[1]:1.0 }; }
+const ALL = [...Object.values(ZIP3), ...Object.values(REGION1)].map(v=>v[1]);
+const MIN_INDEX = Math.min(...ALL), MAX_INDEX = Math.max(...ALL);
+const num = s => parseInt(String(s).replace(/\D/g,''),10) || 0;
+const fmt = n => '$' + (Math.round(n/10)*10).toLocaleString('en-US');
+
+let nationalTotal = 0;
+const sqftEl = document.getElementById('sqft'), bathsEl = document.getElementById('baths');
+[sqftEl, bathsEl].forEach(el => el.addEventListener('input', () => { el.value = el.value.replace(/[^\d,]/g,''); }));
+
+document.getElementById('calcBtn').onclick = () => {
+  const sqft = num(sqftEl.value), baths = num(bathsEl.value);
+  if (sqft < 100){ sqftEl.focus(); sqftEl.style.borderColor = 'var(--copper)'; return; }
+  sqftEl.style.borderColor = '';
+  nationalTotal = BASE + sqft*RATE_SQFT + baths*PER_BATH;
+  document.getElementById('avgLo').textContent = fmt(nationalTotal * MIN_INDEX);
+  document.getElementById('avgHi').textContent = fmt(nationalTotal * MAX_INDEX);
+  document.getElementById('avgPrice').classList.add('show');
+  countUp(document.getElementById('avgNum'), nationalTotal);
+  const s2 = document.getElementById('step2'); s2.style.display = 'block';
+  s2.scrollIntoView({ behavior:'smooth', block:'center' });
+};
+
+const zipEl = document.getElementById('zip');
+zipEl.addEventListener('input', () => { zipEl.value = zipEl.value.replace(/\D/g,'').slice(0,5); });
+
+document.getElementById('localBtn').onclick = () => {
+  if (zipEl.value.length !== 5){ zipEl.focus(); zipEl.style.borderColor = 'var(--copper)'; return; }
+  zipEl.style.borderColor = '';
+  const r = lookupZip(zipEl.value), local = nationalTotal * r.index, pct = Math.round((r.index-1)*100);
+  document.getElementById('locRegion').textContent =
+    r.label + ' · ' + (pct===0 ? 'at national average' : (pct>0 ? pct+'% above average' : Math.abs(pct)+'% below average'));
+  document.getElementById('locLo').textContent = fmt(local*0.85);
+  document.getElementById('locHi').textContent = fmt(local*1.15);
+  document.getElementById('locPrice').classList.add('show');
+  countUp(document.getElementById('locNum'), local);
+  document.getElementById('copyRow').classList.add('show'); // optional copy offer AFTER price
+};
+
+/* optional "send me a copy" — demo only, nothing is sent */
+document.getElementById('sendBtn').onclick = () => {
+  const v = document.getElementById('contact').value.trim();
+  if (!v) { document.getElementById('contact').focus(); return; }
+  document.getElementById('copyFlex').style.display = 'none';
+  const s = document.getElementById('sentMsg');
+  s.style.display = 'block';
+  s.textContent = '✓ Done — your quote is on its way to ' + v + '.';
+};
+
+function countUp(el, target){
+  const dur = 800, t0 = performance.now();
+  (function tick(now){ const p = Math.min(1,(now-t0)/dur), e = 1-Math.pow(1-p,3);
+    el.textContent = (Math.round(target*e/10)*10).toLocaleString('en-US');
+    if (p<1) requestAnimationFrame(tick); })(t0);
+}
+</script>
+</body>
+</html>

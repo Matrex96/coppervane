@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coppervane Plumbing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #0d1217;
+    --panel:   #141c24;
+    --line:    #26333f;
+    --line-2:  #1c2832;
+    --ink:     #eef3f6;
+    --soft:    #93a6b3;
+    --faint:   #5d707e;
+    --accent:  #d98a52;
+    --accent-2:#b96b39;
+    --sans:    "Hanken Grotesk", system-ui, sans-serif;
+    --serif:   "Fraunces", Georgia, serif;
+    --radius:  16px;
+  }
+  :root[data-theme="light"] {
+    --bg:      #f5f3ee;
+    --panel:   #ffffff;
+    --line:    #e2ddd2;
+    --line-2:  #ece8df;
+    --ink:     #1a2129;
+    --soft:    #566572;
+    --faint:   #8a9499;
+    --accent:  #b1602c;
+    --accent-2:#8f491d;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    background: var(--bg); color: var(--ink);
+    line-height: 1.6; -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    transition: background .35s ease, color .35s ease;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 26px; }
+
+  /* ---- header / tabs ---- */
+  header { border-bottom: 1px solid var(--line-2); }
+  .bar { display: flex; align-items: center; justify-content: space-between; height: 74px; }
+  .brand { font-weight: 800; font-size: 1.2rem; letter-spacing: -.02em; }
+  .brand em { color: var(--accent); font-style: normal; }
+  nav { display: flex; gap: 4px; }
+  .tab {
+    font-family: var(--sans); font-size: .9rem; font-weight: 500; color: var(--soft);
+    background: none; border: none; cursor: pointer;
+    padding: 9px 15px; border-radius: 999px; transition: all .18s ease;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active { color: var(--ink); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+  .theme { background: none; border: none; color: var(--soft); cursor: pointer; font-size: 1.1rem; padding: 6px; line-height: 1; }
+  .theme:hover { color: var(--accent); }
+
+  /* ---- panels ---- */
+  .view { display: none; animation: fade .45s ease; }
+  .view.active { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  section.pad { padding-top: 72px; padding-bottom: 96px; }
+  .eyebrow { font-size: .74rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
+  h1 { font-weight: 800; letter-spacing: -.035em; line-height: 1.02; font-size: clamp(2.4rem, 6.5vw, 3.6rem); }
+  .sub { color: var(--soft); font-size: 1.05rem; margin-top: 16px; max-width: 42ch; }
+
+  /* ---- estimator ---- */
+  .step { margin-top: 44px; }
+  .hidden { display: none; }
+  .inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px){ .inputs { grid-template-columns: 1fr; } }
+  .fld { min-width: 0; }
+  .fld label { display: block; font-size: .9rem; font-weight: 500; color: var(--soft); margin-bottom: 8px; }
+  .fld input {
+    width: 100%; font-family: var(--serif); font-weight: 500; font-style: italic; font-size: 1.5rem; color: var(--ink);
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .fld input::placeholder { color: var(--faint); font-family: var(--serif); font-style: italic; font-size: 1.2rem; font-weight: 400; }
+  .fld input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent); }
+  .zip { max-width: 260px; }
+
+  .btn {
+    margin-top: 22px; display: inline-flex; align-items: center; gap: 9px; cursor: pointer;
+    font-family: var(--sans); font-size: .98rem; font-weight: 600; color: #160c05;
+    background: var(--accent); border: none; border-radius: 999px; padding: 14px 26px;
+    transition: transform .12s ease, background .2s;
+  }
+  .btn:hover { background: var(--accent-2); transform: translateY(-1px); }
+  .btn.ghost { background: none; border: 1px solid var(--line); color: var(--ink); }
+  .btn.ghost:hover { border-color: var(--accent); color: var(--accent); background: none; }
+
+  /* ---- price reveal ---- */
+  .price { margin-top: 30px; border-top: 1px solid var(--line-2); padding-top: 28px; overflow: hidden;
+    max-height: 0; opacity: 0; transition: max-height .5s ease, opacity .5s ease; }
+  .price.show { max-height: 460px; opacity: 1; }
+  .price .num { font-family: var(--serif); font-weight: 500; letter-spacing: -.03em; line-height: 1; font-size: clamp(3rem, 11vw, 4.6rem); margin: 2px 0 10px; }
+  .price .num .c { color: var(--accent); font-size: .4em; vertical-align: top; margin-right: .05em; }
+  .price .rng { color: var(--soft); font-size: .95rem; }
+  .price .rng b { color: var(--ink); font-weight: 600; }
+  .price .loc { color: var(--accent); }
+  .price .region { color: var(--accent); font-weight: 600; font-size: .82rem; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 4px; }
+  .ast { color: var(--accent); font-size: .42em; vertical-align: super; font-family: var(--sans); font-weight: 700; }
+  .confirm { color: var(--soft); font-size: .92rem; margin-top: 16px; }
+  .confirm b { color: var(--ink); font-weight: 600; }
+  .footnote { margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line-2); color: var(--faint); font-size: .82rem; line-height: 1.55; max-width: 54ch; }
+  .footnote .star { color: var(--accent); font-weight: 700; }
+
+  /* ---- about / contact ---- */
+  .prose { max-width: 56ch; }
+  .prose p { color: var(--soft); margin-top: 18px; font-size: 1.02rem; }
+  .prose p strong { color: var(--ink); font-weight: 600; }
+  .owner { display: flex; align-items: center; gap: 18px; margin: 32px 0 8px; }
+  .owner .av { width: 62px; height: 62px; border-radius: 50%; flex: none;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2)); display: grid; place-items: center;
+    font-weight: 800; font-size: 1.25rem; color: #160c05; }
+  .owner b { font-size: 1.15rem; font-weight: 700; display: block; }
+  .owner span { color: var(--faint); font-size: .85rem; }
+  .stats { display: flex; gap: 40px; margin-top: 44px; flex-wrap: wrap; }
+  .stats div b { font-size: 1.9rem; font-weight: 800; display: block; letter-spacing: -.02em; }
+  .stats div span { font-size: .8rem; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; color: var(--faint); }
+
+  .contact-row { display: flex; align-items: baseline; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--line-2); }
+  .contact-row .k { font-size: .8rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); min-width: 90px; }
+  .contact-row .v { font-size: 1.05rem; }
+  .contact-row a { color: var(--accent); text-decoration: none; }
+  .contact-row a:hover { text-decoration: underline; }
+
+  footer { border-top: 1px solid var(--line-2); }
+  footer .wrap { display: flex; justify-content: space-between; align-items: center; height: 66px; flex-wrap: wrap; gap: 8px; }
+  footer small { font-size: .78rem; color: var(--faint); }
+  .demo { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <div class="brand">Copper<em>vane</em></div>
+    <nav>
+      <button class="tab active" data-view="estimate">Estimate</button>
+      <button class="tab" data-view="about">About</button>
+      <button class="tab" data-view="contact">Contact</button>
+    </nav>
+    <button class="theme" id="themeBtn" title="Toggle light/dark">☀︎</button>
+  </div>
+</header>
+
+<!-- ============ ESTIMATE ============ -->
+<div class="view active" id="estimate">
+  <section class="wrap pad">
+    <div class="eyebrow">Instant estimate</div>
+    <h1>What will your<br>plumbing cost?</h1>
+    <p class="sub">Two quick numbers for a ballpark. Add your ZIP for an exact local price.</p>
+
+    <!-- step 1 -->
+    <div class="step">
+      <div class="inputs">
+        <div class="fld">
+          <label for="sqft">Square footage</label>
+          <input type="text" id="sqft" inputmode="numeric" placeholder="2,000">
+        </div>
+        <div class="fld">
+          <label for="baths">Bathrooms</label>
+          <input type="text" id="baths" inputmode="numeric" placeholder="2">
+        </div>
+      </div>
+      <button class="btn" id="calcBtn">Show average price</button>
+
+      <div class="price" id="avgPrice">
+        <div class="num"><span class="c">$</span><span id="avgNum">0</span><span class="ast">*</span></div>
+        <div class="rng">Typical range <b id="avgLo">$0</b> – <b id="avgHi">$0</b></div>
+      </div>
+    </div>
+
+    <!-- step 2 — hidden until first calc -->
+    <div class="step hidden" id="step2">
+      <div class="inputs" style="margin-top:0;">
+        <div class="fld">
+          <label for="zip">ZIP code</label>
+          <input type="text" id="zip" inputmode="numeric" maxlength="5" placeholder="94103">
+        </div>
+        <div class="fld">
+          <label for="email">Email <span style="color:var(--faint);font-weight:400;">— optional</span></label>
+          <input type="email" id="email" placeholder="you@email.com">
+        </div>
+      </div>
+      <div class="fld" style="margin-top:14px;">
+        <label for="phone">Phone <span style="color:var(--faint);font-weight:400;">— optional</span></label>
+        <input type="tel" id="phone" placeholder="(512) 555-0142">
+      </div>
+      <button class="btn" id="localBtn" style="font-size:1.08rem;padding:17px 34px;">Get local price →</button>
+
+      <div class="price" id="locPrice">
+        <div class="region" id="locRegion"></div>
+        <div class="num"><span class="c">$</span><span id="locNum" class="loc">0</span><span class="ast">*</span></div>
+        <div class="rng">Local range <b id="locLo">$0</b> – <b id="locHi">$0</b></div>
+        <div class="confirm" id="locConfirm"></div>
+      </div>
+    </div>
+
+    <p class="footnote"><span class="star">*</span> This is an estimate only. Final pricing is confirmed after a free on-site inspection and may vary with actual site conditions, pipe material, and access.</p>
+  </section>
+</div>
+
+<!-- ============ ABOUT ============ -->
+<div class="view" id="about">
+  <section class="wrap pad">
+    <div class="eyebrow">About</div>
+    <h1>Family-run<br>since 1998.</h1>
+    <div class="prose">
+      <p>Coppervane is a licensed plumbing contractor specializing in repipes, water-line installation and new-construction rough-in. No call centers, no upsells — just clean work and an honest price.</p>
+
+      <div class="owner">
+        <div class="av">RM</div>
+        <div><b>Ray Mercer</b><span>Founder &amp; Master Plumber · Lic. #CV-0042198</span></div>
+      </div>
+      <p>Ray started Coppervane out of a single truck after 12 years in the trade. Today the shop runs six crews and still answers the phone the same day.</p>
+
+      <div class="stats">
+        <div><b>12,400+</b><span>Installs</span></div>
+        <div><b>4.9★</b><span>Rating</span></div>
+        <div><b>2-yr</b><span>Warranty</span></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ CONTACT ============ -->
+<div class="view" id="contact">
+  <section class="wrap pad">
+    <div class="eyebrow">Contact</div>
+    <h1>Let's talk<br>pipes.</h1>
+    <div class="prose" style="max-width:100%;">
+      <div class="contact-row"><span class="k">Phone</span><span class="v"><a href="tel:+15125550142">(512) 555-0142</a></span></div>
+      <div class="contact-row"><span class="k">Email</span><span class="v"><a href="mailto:hello@coppervane.example">hello@coppervane.example</a></span></div>
+      <div class="contact-row"><span class="k">Shop</span><span class="v">1420 Basin Rd, Austin, TX 78704</span></div>
+      <div class="contact-row"><span class="k">Hours</span><span class="v">Mon–Sat · 7am – 7pm · Emergency 24/7</span></div>
+      <a class="btn" href="tel:+15125550142" style="margin-top:34px;">Call for a free walkthrough</a>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap">
+    <small>© 1998–2026 Coppervane Plumbing Co.</small>
+    <small class="demo">Demonstration page · figures illustrative</small>
+  </div>
+</footer>
+
+<script>
+/* theme */
+const root = document.documentElement, tBtn = document.getElementById('themeBtn');
+function setTheme(m){ root.setAttribute('data-theme', m); tBtn.textContent = m === 'dark' ? '☀︎' : '☾'; }
+tBtn.onclick = () => setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+setTheme('dark');
+
+/* tabs */
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
+  t.classList.add('active');
+  document.getElementById(t.dataset.view).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+/* ---- pricing ---- */
+const RATE_SQFT = 4.25;   // $ per sq ft (rough plumbing)
+const PER_BATH  = 2900;   // $ per full bathroom
+const BASE      = 850;    // permit + setup
+
+const ZIP3 = {
+  "941":["San Francisco, CA",1.62],"940":["Peninsula, CA",1.55],"900":["Los Angeles, CA",1.44],
+  "951":["San Jose, CA",1.58],"981":["Seattle, WA",1.38],"100":["Manhattan, NY",1.66],
+  "112":["Brooklyn, NY",1.52],"021":["Boston, MA",1.47],"200":["Washington, DC",1.42],
+  "606":["Chicago, IL",1.31],"331":["Miami, FL",1.18],"787":["Austin, TX",1.16],
+  "770":["Houston, TX",1.12],"852":["Phoenix, AZ",1.08],"802":["Denver, CO",1.22],
+  "891":["Las Vegas, NV",1.12],"300":["Atlanta, GA",1.09],"370":["Nashville, TN",1.07],
+  "972":["Portland, OR",1.30],
+};
+const REGION1 = { "0":["Northeast",1.26],"1":["Northeast",1.23],"2":["Mid-Atlantic",1.05],
+  "3":["Southeast",1.02],"4":["Midwest",0.98],"5":["Upper Midwest",0.97],"6":["Plains",0.99],
+  "7":["South Central",1.03],"8":["Mountain West",1.11],"9":["West Coast",1.33] };
+function lookupZip(z){ const k=z.slice(0,3);
+  if (ZIP3[k]) return { label:ZIP3[k][0], index:ZIP3[k][1] };
+  const r=REGION1[z[0]]; return { label:r?r[0]:"United States", index:r?r[1]:1.0 }; }
+
+// cheapest & most expensive markets we cover — drives the national "typical range"
+const ALL_IDX = [...Object.values(ZIP3), ...Object.values(REGION1)].map(v => v[1]);
+const MIN_INDEX = Math.min(...ALL_IDX);   // low-cost region
+const MAX_INDEX = Math.max(...ALL_IDX);   // high-cost region (e.g. Manhattan / SF)
+
+const num = s => parseInt(String(s).replace(/\D/g,''),10) || 0;
+const fmt = n => '$' + (Math.round(n/10)*10).toLocaleString('en-US');
+
+let nationalTotal = 0;
+
+/* step 1 */
+const sqftEl = document.getElementById('sqft'), bathsEl = document.getElementById('baths');
+[sqftEl, bathsEl].forEach(el => el.addEventListener('input', () => { el.value = el.value.replace(/[^\d,]/g,''); }));
+
+document.getElementById('calcBtn').onclick = () => {
+  const sqft = num(sqftEl.value), baths = num(bathsEl.value);
+  if (sqft < 100){ sqftEl.focus(); sqftEl.style.borderColor = 'var(--accent)'; return; }
+  sqftEl.style.borderColor = '';
+  nationalTotal = BASE + sqft * RATE_SQFT + baths * PER_BATH;
+
+  document.getElementById('avgLo').textContent = fmt(nationalTotal * MIN_INDEX);
+  document.getElementById('avgHi').textContent = fmt(nationalTotal * MAX_INDEX);
+  document.getElementById('avgPrice').classList.add('show');
+  countUp(document.getElementById('avgNum'), nationalTotal);
+
+  // reveal step 2
+  const s2 = document.getElementById('step2');
+  s2.classList.remove('hidden');
+  s2.scrollIntoView({ behavior:'smooth', block:'center' });
+};
+
+/* step 2 */
+const zipEl = document.getElementById('zip'), emailEl = document.getElementById('email'), phoneEl = document.getElementById('phone');
+zipEl.addEventListener('input', () => { zipEl.value = zipEl.value.replace(/\D/g,'').slice(0,5); });
+const flash = el => { el.style.borderColor = 'var(--accent)'; el.focus(); };
+const validEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+
+document.getElementById('localBtn').onclick = () => {
+  const email = emailEl.value.trim(), phone = phoneEl.value.trim();
+  // only the ZIP is required to continue; email + phone are optional
+  if (zipEl.value.length !== 5){ flash(zipEl); return; } zipEl.style.borderColor = '';
+
+  const r = lookupZip(zipEl.value);
+  const local = nationalTotal * r.index;
+  const pct = Math.round((r.index - 1) * 100);
+  document.getElementById('locRegion').textContent =
+    r.label + ' · ' + (pct === 0 ? 'at national average' : (pct > 0 ? pct + '% above average' : Math.abs(pct) + '% below average'));
+  document.getElementById('locLo').textContent = fmt(local * 0.85);
+  document.getElementById('locHi').textContent = fmt(local * 1.15);
+  const dest = validEmail(email) ? email : (phone.length >= 7 ? phone : '');
+  document.getElementById('locConfirm').innerHTML = dest
+    ? '✓ A copy of your detailed quote is on its way to <b>' + dest + '</b>.'
+    : '';
+  document.getElementById('locPrice').classList.add('show');
+  countUp(document.getElementById('locNum'), local);
+};
+
+function countUp(el, target){
+  const dur = 800, t0 = performance.now();
+  (function tick(now){
+    const p = Math.min(1, (now - t0)/dur), e = 1 - Math.pow(1-p, 3);
+    el.textContent = (Math.round(target * e / 10) * 10).toLocaleString('en-US');
+    if (p < 1) requestAnimationFrame(tick);
+  })(t0);
+}
+</script>
+</body>
+</html>
