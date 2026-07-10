@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KSB Repipe — Design Demos</title>
-<link rel="icon" href="images/logo.svg" type="image/svg+xml">
+<link rel="icon" href="images/logo.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Archivo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -20,9 +20,7 @@
     min-height: 100dvh; display: grid; place-items: center; padding: 32px 20px;
   }
   main { width: 100%; max-width: 560px; }
-  .logo-ksb { height: 74px; width: auto; display: block; margin-bottom: 22px; }
-  .logo-ksb .lk { fill: #0f284d; }
-  .logo-ksb .lr { fill: #6a5f50; }
+  .logo-ksb { height: 84px; width: auto; display: block; margin-bottom: 22px; }
   h1 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: clamp(1.7rem, 5vw, 2.2rem); letter-spacing: -.02em; line-height: 1.15; text-wrap: balance; }
   .sub { color: var(--soft); margin-top: 10px; font-size: .98rem; }
   .cards { display: grid; gap: 14px; margin-top: 30px; }
@@ -47,21 +45,7 @@
 </head>
 <body>
 <main>
-  <svg class="logo-ksb" viewBox="30 15 470 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="KSB Repipe">
-    <defs>
-      <linearGradient id="pg" x1="20%" y1="10%" x2="80%" y2="90%" gradientUnits="userSpaceOnUse">
-        <stop offset="0%" stop-color="#4FC3F7"/><stop offset="35%" stop-color="#29B6F6"/>
-        <stop offset="65%" stop-color="#1E88E5"/><stop offset="100%" stop-color="#1565C0"/>
-      </linearGradient>
-    </defs>
-    <text x="55" y="155" font-family="Arial Black, Arial, sans-serif" font-size="138" font-weight="900" letter-spacing="-2" class="lk">K</text>
-    <path d="M 215 52 C 275 48, 295 85, 265 120 C 235 155, 255 190, 295 215 C 335 240, 315 282, 260 285"
-          fill="none" stroke="url(#pg)" stroke-width="44" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M 200 45 Q 218 50, 235 46" fill="none" stroke="#0D47A1" stroke-width="13" stroke-linecap="round"/>
-    <path d="M 248 290 Q 265 292, 282 288" fill="none" stroke="#0D47A1" stroke-width="13" stroke-linecap="round"/>
-    <text x="355" y="155" font-family="Arial Black, Arial, sans-serif" font-size="138" font-weight="900" letter-spacing="-2" class="lk">B</text>
-    <text x="55" y="255" font-family="Arial, Helvetica, sans-serif" font-size="39" font-weight="700" letter-spacing="11" class="lr">REPIPE</text>
-  </svg>
+  <img class="logo-ksb" src="images/logo.png" alt="KSB Repipe">
   <h1>Instant repipe quotes, straight from your couch.</h1>
   <p class="sub">Tap a design and play with the price estimator.</p>
   <div class="cards">
