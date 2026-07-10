@@ -3,70 +3,79 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>KSB Repipe — Design Demos</title>
+<meta name="robots" content="noindex, nofollow">
+<title>KSB Repipe — Private Preview</title>
 <link rel="icon" href="images/logo.png" type="image/png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Archivo:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f4efe6; --panel: #fffdf8; --line: #e4dccb;
-    --ink: #241f18; --soft: #6a5f50; --copper: #bf6a33;
+    --bg: #1b242f; --panel: #242f3c; --line: #374654; --ink: #eef3f6;
+    --soft: #a2b4c1; --faint: #74869a; --accent: #d98a52; --accent-2: #b96b39;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: "Archivo", system-ui, sans-serif; background: var(--bg); color: var(--ink);
+    font-family: system-ui, sans-serif; background: var(--bg); color: var(--ink);
     line-height: 1.6; -webkit-font-smoothing: antialiased;
-    min-height: 100dvh; display: grid; place-items: center; padding: 32px 20px;
+    min-height: 100dvh; display: grid; place-items: center; padding: 24px;
   }
-  main { width: 100%; max-width: 560px; }
-  .logo-ksb { height: 84px; width: auto; display: block; margin-bottom: 22px; }
-  h1 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: clamp(1.7rem, 5vw, 2.2rem); letter-spacing: -.02em; line-height: 1.15; text-wrap: balance; }
-  .sub { color: var(--soft); margin-top: 10px; font-size: .98rem; }
-  .cards { display: grid; gap: 14px; margin-top: 30px; }
-  a.card {
-    display: flex; align-items: center; justify-content: space-between; gap: 16px;
-    background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
-    padding: 22px; text-decoration: none; color: inherit;
-    transition: transform .12s ease, border-color .2s;
+  main { width: 100%; max-width: 380px; }
+  .logo { height: 72px; width: auto; display: block; margin: 0 auto 30px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 28px; }
+  .card h1 { font-size: 1.05rem; font-weight: 700; letter-spacing: -.01em; }
+  .card .hint { color: var(--faint); font-size: .84rem; margin-top: 4px; margin-bottom: 20px; }
+  label { display: block; font-size: .86rem; font-weight: 600; color: var(--soft); margin: 14px 0 7px; }
+  input {
+    width: 100%; font-family: inherit; font-size: 1rem; color: var(--ink);
+    background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px;
+    transition: border-color .2s, box-shadow .2s;
   }
-  a.card:hover, a.card:focus-visible { transform: translateY(-2px); border-color: var(--copper); outline: none; }
-  a.card b { font-size: 1.05rem; font-weight: 700; display: block; }
-  a.card span { color: var(--soft); font-size: .88rem; }
-  a.card .go { color: var(--copper); font-weight: 700; font-size: 1.2rem; flex: none; }
-  a.card.main { border-width: 2px; border-color: var(--copper); padding: 26px 22px; }
-  .badge { display: inline-block; background: var(--copper); color: #fff; font-size: .68rem;
-    font-weight: 700; letter-spacing: .08em; text-transform: uppercase; border-radius: 999px;
-    padding: 3px 10px; margin-bottom: 8px; }
-  .badge.test { background: none; color: var(--soft); border: 1px solid var(--line); }
-  .note { margin-top: 26px; color: var(--soft); font-size: .82rem; }
-  @media (prefers-reduced-motion: reduce) { a.card { transition: none; } }
+  input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent); }
+  button {
+    width: 100%; margin-top: 22px; cursor: pointer; font-family: inherit; font-size: 1rem; font-weight: 700;
+    color: #160c05; background: var(--accent); border: none; border-radius: 999px; padding: 13px;
+    transition: background .2s, transform .12s;
+  }
+  button:hover { background: var(--accent-2); transform: translateY(-1px); }
+  .err { color: var(--accent); font-size: .88rem; font-weight: 600; margin-top: 14px; min-height: 1.4em; }
+  footer { text-align: center; color: var(--faint); font-size: .76rem; margin-top: 22px; }
 </style>
 </head>
 <body>
 <main>
-  <img class="logo-ksb" src="images/logo.png" alt="KSB Repipe">
-  <h1>Instant repipe quotes, straight from your couch.</h1>
-  <p class="sub">Tap a design and play with the price estimator.</p>
-  <div class="cards">
-    <a class="card main" href="dark.html">
-      <div>
-        <span class="badge">Main design</span>
-        <b>KSB Repipe</b>
-        <span>Founders page, why-repipe guide, auto day/night theme</span>
-      </div>
-      <div class="go">→</div>
-    </a>
-    <a class="card" href="light.html">
-      <div>
-        <span class="badge test">Test</span>
-        <b>Alternative — warm light style</b>
-        <span>Earlier direction, kept for comparison</span>
-      </div>
-      <div class="go">→</div>
-    </a>
+  <img class="logo" src="images/logo-dark.png" alt="KSB Repipe">
+  <div class="card">
+    <h1>Private preview</h1>
+    <div class="hint">This site isn&rsquo;t public yet — please sign in.</div>
+    <form id="f" autocomplete="off">
+      <label for="u">Username</label>
+      <input id="u" type="text" autocapitalize="none" autofocus>
+      <label for="p">Password</label>
+      <input id="p" type="password">
+      <button type="submit">Sign in →</button>
+      <div class="err" id="err"></div>
+    </form>
   </div>
-  <p class="note">Demo only — all names, prices and reviews are placeholders.</p>
+  <footer>KSB Repipe · demonstration preview</footer>
 </main>
+<script>
+const USER_H = 'cf3a3bbe331c3950d16a8e9917c5bb8340e7c0ef917da25d4a96f92d074bce05';
+const PASS_H = '1fc0d36610eda8c88534c3b720f601456e8aaff06f8e71d83398e9db0a4399b0';
+async function sha(s){
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2,'0')).join('');
+}
+document.getElementById('f').onsubmit = async e => {
+  e.preventDefault();
+  const u = document.getElementById('u').value.trim().toLowerCase();
+  const p = document.getElementById('p').value;
+  if (await sha(u) === USER_H && await sha(p) === PASS_H) {
+    sessionStorage.setItem('ksbAuth', 'yes');
+    location.replace('home.html');
+  } else {
+    document.getElementById('err').textContent = 'Wrong username or password.';
+    document.getElementById('p').value = '';
+  }
+};
+if (sessionStorage.getItem('ksbAuth') === 'yes') location.replace('home.html');
+</script>
 </body>
 </html>
