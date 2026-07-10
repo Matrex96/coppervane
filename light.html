@@ -73,7 +73,15 @@
   .tab.active { color: var(--navy); background: color-mix(in srgb, var(--navy) 10%, transparent); }
   .theme { background: none; border: none; color: var(--soft); cursor: pointer; font-size: 1.05rem; padding: 6px; }
   .theme:hover { color: var(--copper); }
-  @media (max-width: 520px){ .brand small { display:none; } .tab { padding: 8px 10px; } }
+  @media (max-width: 640px){
+    .wrap { padding-left: 18px; padding-right: 18px; }
+    .bar a[href^="tel"] { display: none; }
+    .bar { gap: 8px; }
+    .brand { font-size: 1.05rem; }
+    .logo { display: none; }
+    .tab { padding: 7px 8px; font-size: .84rem; }
+    .theme { padding: 4px 2px; font-size: .95rem; }
+  }
 
   .view { display: none; animation: fade .4s ease; }
   .view.active { display: block; }
@@ -89,6 +97,16 @@
   h1 { font-weight: 800; letter-spacing: -.03em; line-height: 1.03; font-size: clamp(2.2rem, 6vw, 3.3rem); }
   h1 .u { color: var(--copper); }
   .sub { color: var(--soft); font-size: 1.08rem; margin-top: 16px; max-width: 46ch; }
+
+  /* ---- hero photo ---- */
+  .hero { display: grid; grid-template-columns: 1fr 320px; gap: 36px; align-items: center; }
+  .hero-photo { border-radius: 16px; overflow: hidden; border: 1px solid var(--line);
+    box-shadow: 0 18px 40px -28px rgba(20,80,107,.4); aspect-ratio: 4/5; }
+  .hero-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  @media (max-width: 720px){
+    .hero { grid-template-columns: 1fr; }
+    .hero-photo { aspect-ratio: 3/2; order: 2; }
+  }
 
   /* ---- estimator card ---- */
   .estimator { margin-top: 34px; background: var(--panel); border: 1px solid var(--line);
@@ -211,12 +229,19 @@
 <!-- ============ ESTIMATE ============ -->
 <div class="view active" id="estimate">
   <section class="wrap pad">
-    <div class="reviews">
-      <span class="stars">★★★★★</span>
-      <b>4.9</b> on Google <span class="dot">·</span> 312 reviews <span class="dot">·</span> Family-run since 1998
+    <div class="hero">
+      <div>
+        <div class="reviews">
+          <span class="stars">★★★★★</span>
+          <b>4.9</b> on Google <span class="dot">·</span> 312 reviews <span class="dot">·</span> Family-run since 1998
+        </div>
+        <h1>Honest plumbing,<br><span class="u">upfront pricing.</span></h1>
+        <p class="sub">Repipes, water lines and new-construction rough-in across Austin. Get a real ballpark in seconds — no calls, no pressure.</p>
+      </div>
+      <div class="hero-photo">
+        <img src="images/manifold.jpg" alt="Coppervane plumber labeling lines on a PEX manifold">
+      </div>
     </div>
-    <h1>Honest plumbing,<br><span class="u">upfront pricing.</span></h1>
-    <p class="sub">Repipes, water lines and new-construction rough-in across Austin. Get a real ballpark in seconds — no calls, no pressure.</p>
 
     <div class="estimator">
       <div class="est-head"><h2>Estimate your job</h2><span>Free · no obligation</span></div>
