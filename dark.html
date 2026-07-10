@@ -3,19 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Coppervane Plumbing</title>
+<title>KSB Repipe</title>
+<link rel="icon" href="images/logo.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg:      #0d1217;
-    --panel:   #141c24;
-    --line:    #26333f;
-    --line-2:  #1c2832;
+    --bg:      #1b242f;
+    --panel:   #242f3c;
+    --line:    #374654;
+    --line-2:  #2c3947;
     --ink:     #eef3f6;
-    --soft:    #93a6b3;
-    --faint:   #5d707e;
+    --soft:    #a2b4c1;
+    --faint:   #74869a;
     --accent:  #d98a52;
     --accent-2:#b96b39;
     --sans:    "Hanken Grotesk", system-ui, sans-serif;
@@ -70,10 +71,30 @@
   h1 { font-weight: 800; letter-spacing: -.035em; line-height: 1.02; font-size: clamp(2.4rem, 6.5vw, 3.6rem); }
   .sub { color: var(--soft); font-size: 1.05rem; margin-top: 16px; max-width: 42ch; }
 
-  /* ---- hero media ---- */
-  .media { margin-top: 42px; border-radius: var(--radius); overflow: hidden;
-    border: 1px solid var(--line-2); aspect-ratio: 21/9; }
-  .media video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  /* ---- brand logo ---- */
+  .brand svg { height: 50px; width: auto; display: block; }
+  .brand .lk { fill: var(--ink); }
+  .brand .lr { fill: var(--soft); }
+
+  /* ---- founders (About) ---- */
+  .founders { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 40px; max-width: 620px; }
+  @media (max-width: 560px){ .founders { grid-template-columns: 1fr; max-width: 300px; } }
+  figure.founder { margin: 0; background: var(--panel); border: 1px solid var(--line-2);
+    border-radius: var(--radius); overflow: hidden; }
+  .founder .photo { aspect-ratio: 4/5; }
+  .founder .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  figcaption { padding: 14px 16px 18px; }
+  figcaption b { display: block; font-weight: 700; }
+  figcaption span { color: var(--faint); font-size: .82rem; }
+  figcaption p { color: var(--soft); font-size: .88rem; margin-top: 8px; line-height: 1.5; }
+
+  /* ---- why repipe (About) ---- */
+  .why { margin-top: 56px; border-top: 1px solid var(--line-2); padding-top: 36px; }
+  .why h2 { font-weight: 700; font-size: 1.35rem; letter-spacing: -.01em; }
+  .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 26px 30px; margin-top: 26px; }
+  @media (max-width: 560px){ .why-grid { grid-template-columns: 1fr; } }
+  .why-grid b { color: var(--accent); font-weight: 600; display: block; margin-bottom: 5px; }
+  .why-grid p { color: var(--soft); font-size: .93rem; line-height: 1.55; }
 
   /* ---- estimator ---- */
   .step { margin-top: 44px; }
@@ -147,7 +168,23 @@
 
 <header>
   <div class="wrap bar">
-    <div class="brand">Copper<em>vane</em></div>
+    <div class="brand">
+      <svg viewBox="30 15 470 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="KSB Repipe">
+        <defs>
+          <linearGradient id="pg" x1="20%" y1="10%" x2="80%" y2="90%" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#4FC3F7"/><stop offset="35%" stop-color="#29B6F6"/>
+            <stop offset="65%" stop-color="#1E88E5"/><stop offset="100%" stop-color="#1565C0"/>
+          </linearGradient>
+        </defs>
+        <text x="55" y="155" font-family="Arial Black, Arial, sans-serif" font-size="138" font-weight="900" letter-spacing="-2" class="lk">K</text>
+        <path d="M 215 52 C 275 48, 295 85, 265 120 C 235 155, 255 190, 295 215 C 335 240, 315 282, 260 285"
+              fill="none" stroke="url(#pg)" stroke-width="44" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M 200 45 Q 218 50, 235 46" fill="none" stroke="#1E88E5" stroke-width="13" stroke-linecap="round"/>
+        <path d="M 248 290 Q 265 292, 282 288" fill="none" stroke="#1E88E5" stroke-width="13" stroke-linecap="round"/>
+        <text x="355" y="155" font-family="Arial Black, Arial, sans-serif" font-size="138" font-weight="900" letter-spacing="-2" class="lk">B</text>
+        <text x="55" y="255" font-family="Arial, Helvetica, sans-serif" font-size="39" font-weight="700" letter-spacing="11" class="lr">REPIPE</text>
+      </svg>
+    </div>
     <nav>
       <button class="tab active" data-view="estimate">Estimate</button>
       <button class="tab" data-view="about">About</button>
@@ -163,11 +200,6 @@
     <div class="eyebrow">Instant estimate</div>
     <h1>What will your<br>plumbing cost?</h1>
     <p class="sub">Two quick numbers for a ballpark. Add your ZIP for an exact local price.</p>
-
-    <figure class="media">
-      <video src="images/under-sink.mp4" poster="images/under-sink-poster.jpg"
-             autoplay muted loop playsinline aria-label="Plumber closing a shut-off valve under a kitchen sink"></video>
-    </figure>
 
     <!-- step 1 -->
     <div class="step">
@@ -222,21 +254,53 @@
 <!-- ============ ABOUT ============ -->
 <div class="view" id="about">
   <section class="wrap pad">
-    <div class="eyebrow">About</div>
-    <h1>Family-run<br>since 1998.</h1>
-    <div class="prose">
-      <p>Coppervane is a licensed plumbing contractor specializing in repipes, water-line installation and new-construction rough-in. No call centers, no upsells — just clean work and an honest price.</p>
+    <div class="eyebrow">The people behind the trucks</div>
+    <h1>Two founders,<br>one standard.</h1>
+    <p class="sub">KSB Repipe has been family-run since 1998 — no call centers, no upsells, just clean work and a price you can trust.</p>
 
-      <div class="owner">
-        <div class="av">RM</div>
-        <div><b>Ray Mercer</b><span>Founder &amp; Master Plumber · Lic. #CV-0042198</span></div>
-      </div>
-      <p>Ray started Coppervane out of a single truck after 12 years in the trade. Today the shop runs six crews and still answers the phone the same day.</p>
+    <div class="founders">
+      <figure class="founder">
+        <div class="photo"><img src="images/manifold.jpg" alt="Ray Mercer labeling lines on a PEX manifold"></div>
+        <figcaption>
+          <b>Ray Mercer</b><span>Co-Founder · Master Plumber</span>
+          <p>Started the company out of a single truck after 12 years in the trade. Still runs a wrench on the tough jobs.</p>
+        </figcaption>
+      </figure>
+      <figure class="founder">
+        <div class="photo"><img src="images/house-call.jpg" alt="Dana Mercer checking an outdoor line on a house call"></div>
+        <figcaption>
+          <b>Dana Mercer</b><span>Co-Founder · Operations</span>
+          <p>Keeps the six crews scheduled and every quote honest. If you call the shop, you'll probably talk to Dana.</p>
+        </figcaption>
+      </figure>
+    </div>
 
-      <div class="stats">
-        <div><b>12,400+</b><span>Installs</span></div>
-        <div><b>4.9★</b><span>Rating</span></div>
-        <div><b>2-yr</b><span>Warranty</span></div>
+    <div class="stats">
+      <div><b>12,400+</b><span>Installs</span></div>
+      <div><b>4.9★</b><span>Rating</span></div>
+      <div><b>6</b><span>Crews</span></div>
+      <div><b>2-yr</b><span>Warranty</span></div>
+    </div>
+
+    <div class="why">
+      <h2>Why repipe your house?</h2>
+      <div class="why-grid">
+        <div>
+          <b>It raises resale value</b>
+          <p>Buyers and inspectors flag aging pipes immediately. A documented repipe turns a negotiation point into a selling point.</p>
+        </div>
+        <div>
+          <b>It prevents expensive damage</b>
+          <p>Old galvanized and polybutylene lines fail without warning — and water damage is one of the costliest repairs a home can face.</p>
+        </div>
+        <div>
+          <b>Better water, every day</b>
+          <p>Steady pressure on every floor, no rust or discoloration, no metallic taste from corroded lines.</p>
+        </div>
+        <div>
+          <b>It pays along the way</b>
+          <p>No slow leaks quietly driving up the water bill — and many insurers offer better premiums on repiped homes.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -249,7 +313,7 @@
     <h1>Let's talk<br>pipes.</h1>
     <div class="prose" style="max-width:100%;">
       <div class="contact-row"><span class="k">Phone</span><span class="v"><a href="tel:+15125550142">(512) 555-0142</a></span></div>
-      <div class="contact-row"><span class="k">Email</span><span class="v"><a href="mailto:hello@coppervane.example">hello@coppervane.example</a></span></div>
+      <div class="contact-row"><span class="k">Email</span><span class="v"><a href="mailto:hello@ksbrepipe.example">hello@ksbrepipe.example</a></span></div>
       <div class="contact-row"><span class="k">Shop</span><span class="v">1420 Basin Rd, Austin, TX 78704</span></div>
       <div class="contact-row"><span class="k">Hours</span><span class="v">Mon–Sat · 7am – 7pm · Emergency 24/7</span></div>
       <a class="btn" href="tel:+15125550142" style="margin-top:34px;">Call for a free walkthrough</a>
@@ -259,7 +323,7 @@
 
 <footer>
   <div class="wrap">
-    <small>© 1998–2026 Coppervane Plumbing Co.</small>
+    <small>© 1998–2026 KSB Repipe</small>
     <small class="demo">Demonstration page · figures illustrative</small>
   </div>
 </footer>
@@ -269,7 +333,9 @@
 const root = document.documentElement, tBtn = document.getElementById('themeBtn');
 function setTheme(m){ root.setAttribute('data-theme', m); tBtn.textContent = m === 'dark' ? '☀︎' : '☾'; }
 tBtn.onclick = () => setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-setTheme('dark');
+/* default follows the time of day: light 7am–7pm, dark at night */
+const h = new Date().getHours();
+setTheme(h >= 7 && h < 19 ? 'light' : 'dark');
 
 /* tabs */
 document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
@@ -365,12 +431,6 @@ function countUp(el, target){
     el.textContent = (Math.round(target * e / 10) * 10).toLocaleString('en-US');
     if (p < 1) requestAnimationFrame(tick);
   })(t0);
-}
-
-/* honor reduced-motion: show the poster instead of looping video */
-if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
-  document.querySelectorAll('.media video').forEach(v => { v.removeAttribute('autoplay'); v.pause(); });
-}
-</script>
+}</script>
 </body>
 </html>
