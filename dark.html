@@ -72,7 +72,8 @@
   .sub { color: var(--soft); font-size: 1.05rem; margin-top: 16px; max-width: 42ch; }
 
   /* ---- brand logo: light/dark PNG variants swapped by theme ---- */
-  .brand img { height: 52px; width: auto; display: block; }
+  .brand { cursor: pointer; }
+  .brand img { height: 44px; width: auto; display: block; }
   html[data-theme="dark"] .logo-l { display: none; }
   html[data-theme="light"] .logo-d { display: none; }
 
@@ -181,7 +182,7 @@
 
 <header>
   <div class="wrap bar">
-    <div class="brand">
+    <div class="brand" role="link" tabindex="0" aria-label="KSB Repipe — home" title="Home">
       <img class="logo-l" src="images/logo.png" alt="KSB Repipe">
       <img class="logo-d" src="images/logo-dark.png" alt="KSB Repipe">
     </div>
@@ -354,6 +355,12 @@ tBtn.onclick = () => setTheme(root.getAttribute('data-theme') === 'dark' ? 'ligh
 /* default follows the time of day: light 7am–7pm, dark at night */
 const h = new Date().getHours();
 setTheme(h >= 7 && h < 19 ? 'light' : 'dark');
+
+/* logo click -> home (estimate view) */
+const brand = document.querySelector('.brand');
+const goHome = () => document.querySelector('.tab[data-view="estimate"]').click();
+brand.onclick = goHome;
+brand.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goHome(); } };
 
 /* contact: leave a message (demo — nothing is actually sent yet) */
 const msgBtn = document.getElementById('msgBtn');
