@@ -77,7 +77,7 @@
   html[data-theme="light"] .logo-d { display: none; }
 
   /* ---- founders (About) ---- */
-  .founders { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 40px; max-width: 620px; }
+  .founders { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 40px auto 0; max-width: 620px; }
   @media (max-width: 560px){ .founders { grid-template-columns: 1fr; max-width: 300px; } }
   figure.founder { margin: 0; background: var(--panel); border: 1px solid var(--line-2);
     border-radius: var(--radius); overflow: hidden; }
@@ -95,6 +95,7 @@
   @media (max-width: 560px){ .why-grid { grid-template-columns: 1fr; } }
   .why-grid b { color: var(--accent); font-weight: 600; display: block; margin-bottom: 5px; }
   .why-grid p { color: var(--soft); font-size: .93rem; line-height: 1.55; }
+  .why > p { color: var(--soft); margin-top: 18px; max-width: 58ch; line-height: 1.65; }
 
   /* ---- estimator ---- */
   .step { margin-top: 44px; }
@@ -267,6 +268,11 @@
       <div><b>4.9★</b><span>Rating</span></div>
       <div><b>6</b><span>Crews</span></div>
       <div><b>2-yr</b><span>Warranty</span></div>
+    </div>
+
+    <div class="why">
+      <h2>How we do it</h2>
+      <p>We upgrade your home&rsquo;s outdated, corroded plumbing by accessing it &mdash; often through the attic or crawl space &mdash; removing old lines, and installing durable piping. This boosts water quality, lowers leak risk, and ensures lasting peace of mind.</p>
     </div>
 
     <div class="why">
