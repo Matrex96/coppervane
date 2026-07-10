@@ -97,6 +97,18 @@
   .why-grid p { color: var(--soft); font-size: .93rem; line-height: 1.55; }
   .why > p { color: var(--soft); margin-top: 18px; max-width: 58ch; line-height: 1.65; }
 
+  /* ---- contact message box ---- */
+  .msgbox { display: none; margin-top: 30px; max-width: 560px; }
+  .msgbox.show { display: block; animation: fade .45s ease; }
+  .msgbox textarea {
+    width: 100%; font-family: var(--serif); font-weight: 500; font-style: italic; font-size: 1.15rem; color: var(--ink);
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px;
+    resize: vertical; min-height: 130px; transition: border-color .2s, box-shadow .2s;
+  }
+  .msgbox textarea::placeholder { color: var(--faint); font-size: 1.05rem; font-weight: 400; }
+  .msgbox textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent); }
+  .sent-note { color: var(--accent); font-weight: 600; margin-top: 18px; display: none; }
+
   /* ---- estimator ---- */
   .step { margin-top: 44px; }
   .hidden { display: none; }
@@ -309,7 +321,20 @@
       <div class="contact-row"><span class="k">Email</span><span class="v"><a href="mailto:hello@ksbrepipe.example">hello@ksbrepipe.example</a></span></div>
       <div class="contact-row"><span class="k">Shop</span><span class="v">1420 Basin Rd, Austin, TX 78704</span></div>
       <div class="contact-row"><span class="k">Hours</span><span class="v">Mon–Sat · 7am – 7pm · Emergency 24/7</span></div>
-      <a class="btn" href="tel:+15125550142" style="margin-top:34px;">Call for a free walkthrough</a>
+      <button class="btn" id="msgBtn" style="margin-top:34px;">Leave us a message</button>
+
+      <div class="msgbox" id="msgBox">
+        <div class="fld">
+          <label for="msgText">Your message</label>
+          <textarea id="msgText" placeholder="Tell us about your home and what you need — we'll get back to you."></textarea>
+        </div>
+        <div class="fld" style="margin-top:14px;">
+          <label for="msgContact">Phone <span style="color:var(--faint);font-weight:400;">— or email if you prefer</span></label>
+          <input type="text" id="msgContact" placeholder="(512) 555-0142">
+        </div>
+        <button class="btn" id="msgSend" style="margin-top:20px;">Send message →</button>
+        <div class="sent-note" id="msgSent"></div>
+      </div>
     </div>
   </section>
 </div>
@@ -329,6 +354,23 @@ tBtn.onclick = () => setTheme(root.getAttribute('data-theme') === 'dark' ? 'ligh
 /* default follows the time of day: light 7am–7pm, dark at night */
 const h = new Date().getHours();
 setTheme(h >= 7 && h < 19 ? 'light' : 'dark');
+
+/* contact: leave a message (demo — nothing is actually sent yet) */
+const msgBtn = document.getElementById('msgBtn');
+msgBtn.onclick = () => {
+  msgBtn.style.display = 'none';
+  document.getElementById('msgBox').classList.add('show');
+  document.getElementById('msgText').focus();
+};
+document.getElementById('msgSend').onclick = () => {
+  const t = document.getElementById('msgText'), c = document.getElementById('msgContact');
+  if (!t.value.trim()){ t.focus(); t.style.borderColor = 'var(--accent)'; return; } t.style.borderColor = '';
+  if (c.value.trim().length < 5){ c.focus(); c.style.borderColor = 'var(--accent)'; return; } c.style.borderColor = '';
+  document.querySelectorAll('#msgBox .fld, #msgSend').forEach(el => el.style.display = 'none');
+  const s = document.getElementById('msgSent');
+  s.style.display = 'block';
+  s.textContent = '✓ Thanks! Your message is in — we’ll get back to you at ' + c.value.trim() + '.';
+};
 
 /* tabs */
 document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
