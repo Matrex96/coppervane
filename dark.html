@@ -71,6 +71,8 @@
   section.pad { padding-top: 72px; padding-bottom: 96px; }
   .eyebrow { font-size: .74rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
   h1 { font-weight: 800; letter-spacing: -.035em; line-height: 1.02; font-size: clamp(2.4rem, 6.5vw, 3.6rem); }
+  h1.headline-one { color: var(--accent); font-size: clamp(1.35rem, 3.5vw, 1.78rem); letter-spacing: -.02em; line-height: 1.2; white-space: nowrap; }
+  @media (max-width: 640px){ h1.headline-one { white-space: normal; } }
   .sub { color: var(--soft); font-size: 1.05rem; margin-top: 16px; max-width: 42ch; }
 
   /* ---- brand logo: light/dark PNG variants swapped by theme ---- */
@@ -200,8 +202,7 @@
 <!-- ============ ESTIMATE ============ -->
 <div class="view active" id="estimate">
   <section class="wrap pad">
-    <div class="eyebrow">Instant estimate</div>
-    <h1>What does a whole<br>repipe cost?</h1>
+    <h1 class="headline-one">Instant estimate — what does a whole repipe cost?</h1>
     <p class="sub" style="max-width:none;">Add your ZIP for an exact local price.</p>
 
     <!-- step 1 -->
