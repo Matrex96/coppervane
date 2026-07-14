@@ -369,7 +369,7 @@
         <div class="booking" id="booking">
           <div class="bk-eyebrow">Next step · free &amp; no obligation</div>
           <h2 class="bk-title">Book a free on-site inspection for an <span class="u">exact</span> quote.</h2>
-          <p class="bk-sub">A licensed plumber measures the job on site and hands you a firm, written price. Pick a weekday and a window that works — we'll call to confirm.</p>
+          <p class="bk-sub">Our inspector will confirm the details and the estimate.</p>
 
           <div class="bk-grid">
             <div class="bk-cal-wrap">
@@ -576,12 +576,12 @@ function countUp(el, target){
 /* ============================================================
    On-site inspection booking (experimental variant)
    - inline flatpickr calendar, weekdays 08:00–15:00 only
-   - two ~half-day slots per day, 3 crews each
+   - two ~half-day slots per day, 2 slots each
    - fake bookings are DETERMINISTIC (derived from the date),
      so availability never reshuffles on reload/navigation
    ============================================================ */
 (function(){
-  const CAP = 3; // crews per slot
+  const CAP = 2; // slots per window
   const SLOTS = [
     { id:'am', label:'Morning',   time:'08:00–12:00' },
     { id:'pm', label:'Afternoon', time:'12:00–15:00' }
@@ -665,8 +665,8 @@ function countUp(el, target){
       btn.className = 'bk-slot';
       let stCls, stTxt;
       if (left <= 0){ stCls = 'no'; stTxt = 'Fully booked'; btn.disabled = true; }
-      else if (left === 1){ stCls = 'low'; stTxt = '1 crew left'; }
-      else { stCls = 'ok'; stTxt = left + ' crews open'; }
+      else if (left === 1){ stCls = 'low'; stTxt = '1 slot left'; }
+      else { stCls = 'ok'; stTxt = left + ' slots open'; }
       btn.innerHTML = '<span class="lab">' + s.label +
         '<span class="tm">' + s.time + '</span></span>' +
         '<span class="st ' + stCls + '">' + stTxt + '</span>';
@@ -690,7 +690,7 @@ function countUp(el, target){
     const done = $('bkDone');
     done.hidden = false;
     done.innerHTML = '✓ Requested: ' + label + ' · ' + selSlot.time +
-      '<span class="sm">We\'ll call to confirm your free on-site inspection. Nothing is charged today.</span>';
+      '<span class="sm">Nothing is charged today.</span>';
   }
 
   window.revealBooking = function(){

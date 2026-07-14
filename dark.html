@@ -10,6 +10,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- flatpickr 4.6.13 — inline date picker for the on-site inspection booking (dark-themed below) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
 <style>
   :root {
     --bg:      #1b242f;
@@ -21,6 +23,11 @@
     --faint:   #74869a;
     --accent:  #d98a52;
     --accent-2:#b96b39;
+    --panel-2: #1f2a35;
+    --gold:    #e6b455;
+    --navy:    #4aa3c4;
+    --av-free: #5aab74;
+    --av-full: #d1665a;
     --sans:    "Hanken Grotesk", system-ui, sans-serif;
     --serif:   "Fraunces", Georgia, serif;
     --radius:  16px;
@@ -35,6 +42,11 @@
     --faint:   #8a9499;
     --accent:  #b1602c;
     --accent-2:#8f491d;
+    --panel-2: #efeae0;
+    --gold:    #d99a2f;
+    --navy:    #14506b;
+    --av-free: #3f9d5a;
+    --av-full: #c0492f;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
@@ -156,66 +168,82 @@
   .footnote .star { color: var(--accent); font-weight: 700; }
   .btn:disabled, .btn:disabled:hover { opacity: .45; cursor: default; transform: none; background: var(--accent); }
 
-  /* ---- booking calendar (revealed after the local price) ---- */
+  /* ============================================================
+     ON-SITE INSPECTION BOOKING
+     Inline flatpickr calendar + availability + slot chips.
+     Revealed (via the .cal wrapper) only after the local price.
+     ============================================================ */
   .cal { margin-top: 30px; border-top: 1px solid var(--line-2); padding-top: 28px;
     overflow: hidden; max-height: 0; opacity: 0; transition: max-height .55s ease, opacity .55s ease; }
-  .cal.show { max-height: 1700px; opacity: 1; }
-  .cal h3 { font-family: var(--serif); font-weight: 600; font-size: 1.5rem; letter-spacing: -.02em; line-height: 1.15; }
-  .cal .lead { color: var(--soft); font-size: .96rem; margin-top: 8px; max-width: 48ch; }
-  .cal-card { margin-top: 22px; background: var(--panel); border: 1px solid var(--line-2); border-radius: var(--radius); padding: 18px 18px 20px; }
-  .cal-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 14px; }
-  .cal-title { font-weight: 700; font-size: 1.05rem; letter-spacing: -.01em; }
-  .cal-nav { display: flex; align-items: center; gap: 6px; }
-  .cal-ib { background: none; border: 1px solid var(--line); color: var(--ink); cursor: pointer;
-    width: 34px; height: 34px; border-radius: 999px; font-size: 1.15rem; line-height: 1;
-    display: grid; place-items: center; transition: border-color .18s, color .18s; }
-  .cal-ib:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
-  .cal-ib:disabled { opacity: .32; cursor: default; }
-  .cal-today { font-family: var(--sans); font-size: .82rem; font-weight: 600; color: var(--ink);
-    background: none; border: 1px solid var(--line); border-radius: 999px; padding: 0 14px; height: 34px; cursor: pointer;
-    transition: border-color .18s, color .18s; }
-  .cal-today:hover { border-color: var(--accent); color: var(--accent); }
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-  .cal-dow { text-align: center; font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--faint); padding-bottom: 4px; }
-  .cal-day { position: relative; min-width: 0; aspect-ratio: 1 / 1; border-radius: 10px;
-    border: 1px solid transparent; background: none; color: var(--ink);
-    font-family: var(--serif); font-weight: 500; font-size: 1.02rem; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: transform .12s ease, border-color .18s, background .18s; }
-  .cal-day.blank { visibility: hidden; cursor: default; }
-  .cal-day.off { color: var(--faint); opacity: .4; cursor: default; }
-  .cal-day.avail { border-color: color-mix(in srgb, currentColor 42%, transparent); background: color-mix(in srgb, currentColor 13%, transparent); }
-  .cal-day.free { color: #5aab74; }
-  .cal-day.some { color: var(--accent); }
-  .cal-day.full { color: #d1665a; }
-  .cal-day.avail:hover { transform: translateY(-1px); border-color: currentColor; }
-  .cal-day.sel { box-shadow: 0 0 0 2px var(--panel), 0 0 0 4px currentColor; }
-  .cal-legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 15px; font-size: .78rem; color: var(--soft); }
-  .cal-legend span { display: inline-flex; align-items: center; gap: 6px; }
-  .cal-legend i { width: 11px; height: 11px; border-radius: 3px; display: inline-block;
-    background: color-mix(in srgb, currentColor 24%, transparent); border: 1px solid color-mix(in srgb, currentColor 55%, transparent); }
-  .cal-legend .lg-free { color: #5aab74; } .cal-legend .lg-some { color: var(--accent); } .cal-legend .lg-full { color: #d1665a; }
-  .cal-slots { margin-top: 18px; border-top: 1px solid var(--line-2); padding-top: 16px; display: none; }
-  .cal-slots.show { display: block; animation: fade .35s ease; }
-  .cal-slots .sday { font-weight: 700; font-size: .98rem; margin-bottom: 12px; }
-  .cal-slots .sday span { color: var(--soft); font-weight: 500; }
-  .slot-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  @media (max-width: 440px){ .slot-row { grid-template-columns: 1fr; } }
-  .slot { text-align: left; background: var(--bg); border: 1px solid var(--line); border-radius: 12px;
-    padding: 13px 15px; cursor: pointer; color: var(--ink); font-family: var(--sans);
-    transition: border-color .18s, background .18s, transform .12s; }
-  .slot:hover:not(:disabled) { border-color: var(--accent); transform: translateY(-1px); }
-  .slot b { display: block; font-weight: 700; font-size: 1rem; }
-  .slot small { color: var(--soft); font-size: .84rem; }
-  .slot .tag { display: block; font-size: .76rem; font-weight: 700; color: #5aab74; margin-top: 5px; letter-spacing: .03em; }
-  .slot.sel { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
-  .slot:disabled { opacity: .55; cursor: default; }
-  .slot:disabled .tag { color: #d1665a; }
-  .cal-done { color: var(--accent); font-weight: 600; margin-top: 16px; font-size: .95rem; line-height: 1.5; display: none; }
-  .cal-done.show { display: block; animation: fade .4s ease; }
+  .cal.show { max-height: 2600px; opacity: 1; }
+
+  .bk-eyebrow { color: var(--accent); font-size: .74rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 8px; }
+  .bk-title { font-family: var(--serif); font-weight: 500; font-size: clamp(1.35rem, 4vw, 1.6rem); letter-spacing: -.01em; line-height: 1.15; }
+  .bk-title .u { color: var(--accent); }
+  .bk-sub { color: var(--soft); font-size: .95rem; margin-top: 8px; max-width: 50ch; }
+  .bk-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 20px; margin-top: 22px; align-items: start; }
+  @media (max-width: 660px){ .bk-grid { grid-template-columns: 1fr; } }
+
+  .bk-cal-wrap { background: var(--panel-2); border: 1px solid var(--line); border-radius: 14px; padding: 14px; min-width: 0; }
+  .bk-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 12px; font-size: .78rem; font-weight: 600; color: var(--soft); }
+  .bk-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .lg { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+  .lg-free { background: var(--av-free); } .lg-some { background: var(--gold); } .lg-full { background: var(--av-full); }
+  .bk-fallback { margin-top: 12px; font-size: .92rem; line-height: 1.55; color: var(--soft);
+    background: var(--panel); border: 1px dashed var(--line); border-radius: 10px; padding: 14px; }
+  .bk-fallback a { color: var(--accent); font-weight: 700; text-decoration: none; }
+  .bk-fallback a:hover { text-decoration: underline; }
+
+  .bk-panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; min-height: 210px; }
+  .bk-day { font-size: .95rem; font-weight: 600; color: var(--soft); }
+  .bk-day b { color: var(--ink); font-weight: 700; }
+  .bk-slots { display: grid; gap: 10px; margin-top: 14px; }
+  .bk-slot { display: flex; align-items: center; justify-content: space-between; gap: 12px; text-align: left; width: 100%;
+    font-family: var(--sans); font-size: .96rem; font-weight: 700; color: var(--ink);
+    background: var(--panel-2); border: 1.5px solid var(--line); border-radius: 11px; padding: 12px 15px; cursor: pointer;
+    transition: border-color .15s, background .15s, transform .1s; }
+  .bk-slot:hover:not(:disabled) { border-color: var(--accent); transform: translateY(-1px); }
+  .bk-slot.sel { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--panel)); }
+  .bk-slot:disabled { cursor: not-allowed; opacity: .5; }
+  .bk-slot .lab .tm { display: block; font-family: var(--serif); font-style: italic; font-weight: 500; color: var(--soft); font-size: .82rem; margin-top: 1px; }
+  .bk-slot .st { font-size: .78rem; font-weight: 800; letter-spacing: .01em; white-space: nowrap; flex: none; }
+  .bk-slot .st.ok { color: var(--av-free); } .bk-slot .st.low { color: var(--accent); } .bk-slot .st.no { color: var(--av-full); }
+  .bk-confirm { width: 100%; justify-content: center; margin-top: 16px; }
+  .bk-confirm:disabled { opacity: .4; cursor: not-allowed; transform: none; background: var(--accent); }
+  .bk-done { margin-top: 6px; background: color-mix(in srgb, var(--navy) 9%, var(--panel));
+    border: 1px solid color-mix(in srgb, var(--navy) 28%, transparent); border-radius: 11px;
+    padding: 15px 16px; color: var(--navy); font-weight: 600; font-size: .96rem; line-height: 1.5; }
+  .bk-done .sm { display: block; color: var(--soft); font-weight: 500; font-size: .84rem; margin-top: 4px; }
+
+  /* ---- flatpickr, re-skinned to the dark copper theme (scoped to .bk-cal) ---- */
+  .bk-cal-wrap .flatpickr-calendar { background: transparent; box-shadow: none; width: 100%; max-width: 100%; font-family: var(--sans); }
+  .bk-cal-wrap .flatpickr-calendar.inline { top: 0; border: 0; }
+  .bk-cal-wrap .flatpickr-innerContainer, .bk-cal-wrap .flatpickr-rContainer,
+  .bk-cal-wrap .flatpickr-days, .bk-cal-wrap .dayContainer { width: 100%; max-width: 100%; min-width: 0; }
+  .bk-cal-wrap .flatpickr-months { align-items: center; margin-bottom: 4px; }
+  .bk-cal-wrap .flatpickr-month, .bk-cal-wrap .flatpickr-current-month input.cur-year { color: var(--ink); fill: var(--ink); font-family: var(--sans); }
+  .bk-cal-wrap .flatpickr-current-month .flatpickr-monthDropdown-months, .bk-cal-wrap .flatpickr-current-month span.cur-month { font-weight: 700; }
+  .bk-cal span.flatpickr-weekday { color: var(--faint); font-weight: 700; font-size: .7rem; }
+  .bk-cal-wrap .flatpickr-prev-month svg, .bk-cal-wrap .flatpickr-next-month svg { fill: var(--soft); }
+  .bk-cal-wrap .flatpickr-prev-month:hover svg, .bk-cal-wrap .flatpickr-next-month:hover svg { fill: var(--accent); }
+  .bk-cal-wrap .flatpickr-day { color: var(--ink); border-radius: 9px; position: relative; max-width: none; height: 40px; line-height: 39px;
+    border: 1.5px solid transparent; }
+  .bk-cal-wrap .flatpickr-day.flatpickr-disabled, .bk-cal-wrap .flatpickr-day.prevMonthDay, .bk-cal-wrap .flatpickr-day.nextMonthDay { color: var(--faint); }
+  .bk-cal-wrap .flatpickr-day.today { border-color: var(--gold); font-weight: 700; }
+  .bk-cal-wrap .flatpickr-day:hover:not(.flatpickr-disabled):not(.selected) { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+  .bk-cal-wrap .flatpickr-day.selected, .bk-cal-wrap .flatpickr-day.selected:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .av-dot { position: absolute; left: 50%; bottom: 5px; transform: translateX(-50%); width: 5px; height: 5px; border-radius: 50%; }
+  .bk-cal-wrap .flatpickr-day.av-free { background: color-mix(in srgb, var(--av-free) 11%, transparent); }
+  .bk-cal-wrap .flatpickr-day.av-free .av-dot { background: var(--av-free); }
+  .bk-cal-wrap .flatpickr-day.av-some { background: color-mix(in srgb, var(--gold) 15%, transparent); }
+  .bk-cal-wrap .flatpickr-day.av-some .av-dot { background: var(--gold); }
+  .bk-cal-wrap .flatpickr-day.av-full { background: color-mix(in srgb, var(--av-full) 12%, transparent); color: var(--faint); text-decoration: line-through; }
+  .bk-cal-wrap .flatpickr-day.av-full .av-dot { background: var(--av-full); }
+  .bk-cal-wrap .flatpickr-day.selected .av-dot { background: #fff; }
+
   @media (prefers-reduced-motion: reduce){
-    .cal, .cal-day, .cal-ib, .cal-today, .slot { transition: none; }
-    .cal-slots.show, .cal-done.show { animation: none; }
+    .cal { transition: none; }
+    .bk-slot, .btn { transition: none; }
   }
 
   /* ---- about / contact ---- */
@@ -313,31 +341,30 @@
         <div class="confirm" id="locConfirm"></div>
       </div>
 
-      <!-- booking calendar — revealed after the local price -->
-      <div class="cal" id="calBook">
-        <h3>Book a free on-site inspection</h3>
-        <p class="lead">Lock in your exact quote. Pick a weekday below — <b style="color:#5aab74;font-weight:600;">green</b> is fully open, <b style="color:var(--accent);font-weight:600;">amber</b> is limited, <b style="color:#d1665a;font-weight:600;">red</b> is booked out. We'll confirm by phone.</p>
-        <div class="cal-card">
-          <div class="cal-head">
-            <div class="cal-title" id="calTitle">Month YYYY</div>
-            <div class="cal-nav">
-              <button class="cal-today" id="calToday" type="button">Today</button>
-              <button class="cal-ib" id="calPrev" type="button" aria-label="Previous month">‹</button>
-              <button class="cal-ib" id="calNext" type="button" aria-label="Next month">›</button>
+      <!-- ===== on-site inspection booking — revealed after the local price ===== -->
+      <div class="cal" id="booking">
+        <div class="bk-eyebrow">Next step · free &amp; no obligation</div>
+        <h2 class="bk-title">Book a free on-site inspection for an <span class="u">exact</span> quote.</h2>
+        <p class="bk-sub">Our inspector will confirm the details and the estimate.</p>
+
+        <div class="bk-grid">
+          <div class="bk-cal-wrap">
+            <div class="bk-cal" id="calAnchor"></div>
+            <div class="bk-legend">
+              <span><i class="lg lg-free"></i>Open</span>
+              <span><i class="lg lg-some"></i>Filling up</span>
+              <span><i class="lg lg-full"></i>Fully booked</span>
+            </div>
+            <div class="bk-fallback" id="bkFallback" hidden>
+              Our live scheduler didn't load. Call <a href="tel:+15125550142">(512) 555-0142</a> and we'll set up your free inspection on the spot.
             </div>
           </div>
-          <div class="cal-grid" id="calDow" aria-hidden="true"></div>
-          <div class="cal-grid" id="calGrid" role="grid" aria-label="Available inspection days"></div>
-          <div class="cal-legend">
-            <span class="lg-free"><i></i>Open</span>
-            <span class="lg-some"><i></i>Limited</span>
-            <span class="lg-full"><i></i>Booked out</span>
-          </div>
-          <div class="cal-slots" id="calSlots">
-            <div class="sday" id="calSday"></div>
-            <div class="slot-row" id="calSlotRow"></div>
-            <button class="btn" id="calConfirm" type="button" disabled>Confirm inspection →</button>
-            <div class="cal-done" id="calDone"></div>
+
+          <div class="bk-panel">
+            <div class="bk-day" id="bkDay">Select a weekday to see open windows.</div>
+            <div class="bk-slots" id="bkSlots"></div>
+            <button class="btn bk-confirm" id="bkConfirm" disabled>Request this time</button>
+            <div class="bk-done" id="bkDone" hidden></div>
           </div>
         </div>
       </div>
@@ -561,7 +588,7 @@ document.getElementById('localBtn').onclick = () => {
   countUp(document.getElementById('locNum'), local);
 
   // reveal the booking calendar under the final local price
-  if (window.__revealCalendar) window.__revealCalendar();
+  if (window.revealBooking) window.revealBooking();
 };
 
 function countUp(el, target){
@@ -573,140 +600,142 @@ function countUp(el, target){
   })(t0);
 }
 
-/* ---- booking calendar (demo — deterministic fake availability, no backend) ---- */
+</script>
+
+<!-- flatpickr 4.6.13 — loaded synchronously so window.revealBooking can use it -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
+<script>
+/* ============================================================
+   On-site inspection booking
+   - inline flatpickr calendar, weekdays 08:00–15:00 only
+   - two ~half-day slots per day, 2 slots each
+   - fake bookings are DETERMINISTIC (derived from the date),
+     so availability never reshuffles on reload/navigation
+   ============================================================ */
 (function(){
+  const CAP = 2; // slots per window
   const SLOTS = [
-    { name:'Morning',   time:'08:00–12:00' },
-    { name:'Afternoon', time:'12:00–15:00' },
+    { id:'am', label:'Morning',   time:'08:00–12:00' },
+    { id:'pm', label:'Afternoon', time:'12:00–15:00' }
   ];
-  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let fp = null, inited = false, selDate = null, selSlot = null;
 
-  const today = new Date(); today.setHours(0,0,0,0);
-  let viewY = today.getFullYear(), viewM = today.getMonth();
-  let selKey = null, selSlot = null;          // selected day (yyyy-mm-dd) + slot index
-  const userBooked = new Set();               // "iso|idx" booked this session (in-memory)
+  const $ = id => document.getElementById(id);
 
-  const iso = d => d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-
-  // FNV-1a — stable pseudo-random per date string (no Math.random at render time)
-  function hash(s){ let h = 2166136261; for (let i=0;i<s.length;i++){ h ^= s.charCodeAt(i); h = Math.imul(h,16777619); } return h >>> 0; }
-
-  // deterministic "already taken" for a day+slot, plus anything booked this session
-  function taken(isoStr, idx){
-    if (userBooked.has(isoStr + '|' + idx)) return true;
-    const h = hash(isoStr);
-    const bits = idx === 0 ? (h % 5) : ((h >> 4) % 5);   // ~40% each slot pre-booked
-    return bits < 2;
+  // deterministic hash of a calendar date -> uint32
+  function hashDate(d){
+    let s = (d.getFullYear() * 10000 + (d.getMonth()+1) * 100 + d.getDate()) >>> 0;
+    s = (s ^ 0x9e3779b9) >>> 0;
+    s = Math.imul(s, 2654435761) >>> 0;
+    s ^= s >>> 15;
+    return s >>> 0;
   }
-  const freeCount = isoStr => SLOTS.reduce((n,_,i) => n + (taken(isoStr,i) ? 0 : 1), 0);
+  // bookings already taken per slot (0..CAP), stable per date
+  function bookedFor(d){
+    const h = hashDate(d);
+    return { am: h % (CAP + 1), pm: Math.floor(h / 16) % (CAP + 1) };
+  }
+  function remainFor(d){
+    const b = bookedFor(d);
+    return { am: CAP - b.am, pm: CAP - b.pm };
+  }
+  function dayState(d){
+    const r = remainFor(d), total = r.am + r.pm;
+    if (total === 0) return 'full';
+    if (r.am === 0 || r.pm === 0 || total <= 2) return 'some';
+    return 'free';
+  }
+  function isBusinessDay(d){ const w = d.getDay(); return w !== 0 && w !== 6; }
+  function startOfToday(){ const t = new Date(); t.setHours(0,0,0,0); return t; }
 
-  const grid   = document.getElementById('calGrid');
-  const dowEl  = document.getElementById('calDow');
-  const title  = document.getElementById('calTitle');
-  const prevB  = document.getElementById('calPrev');
-  const nextB  = document.getElementById('calNext');
-  const wrapEl = document.getElementById('calSlots');
-  const sdayEl = document.getElementById('calSday');
-  const rowEl  = document.getElementById('calSlotRow');
-  const okBtn  = document.getElementById('calConfirm');
-  const doneEl = document.getElementById('calDone');
-
-  DOW.forEach(d => { const c = document.createElement('div'); c.className = 'cal-dow'; c.textContent = d; dowEl.appendChild(c); });
-
-  const fmtDay = d => d.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
-  const parseIso = s => { const [y,m,dd] = s.split('-').map(Number); return new Date(y, m-1, dd); };
-
-  function renderGrid(){
-    title.textContent = MONTHS[viewM] + ' ' + viewY;
-    // never page into fully-past months
-    prevB.disabled = (viewY === today.getFullYear() && viewM === today.getMonth());
-
-    grid.innerHTML = '';
-    const lead = new Date(viewY, viewM, 1).getDay();          // Sun=0 … Sat=6
-    const days = new Date(viewY, viewM + 1, 0).getDate();
-
-    for (let i = 0; i < lead; i++){ const b = document.createElement('div'); b.className = 'cal-day blank'; grid.appendChild(b); }
-
-    for (let day = 1; day <= days; day++){
-      const d = new Date(viewY, viewM, day); d.setHours(0,0,0,0);
-      const isoStr = iso(d), dow = d.getDay();
-      const past = d < today, weekend = (dow === 0 || dow === 6);
-      const cell = document.createElement('button');
-      cell.type = 'button'; cell.textContent = day;
-
-      if (past || weekend){
-        cell.className = 'cal-day off';
-        cell.disabled = true; cell.tabIndex = -1;
-        cell.setAttribute('aria-label', day + ' ' + MONTHS[viewM] + (weekend ? ' — weekend, unavailable' : ' — unavailable'));
-      } else {
-        const free = freeCount(isoStr);
-        const tone = free === 2 ? 'free' : (free === 1 ? 'some' : 'full');
-        cell.className = 'cal-day avail ' + tone + (isoStr === selKey ? ' sel' : '');
-        cell.dataset.iso = isoStr;
-        cell.setAttribute('aria-label', fmtDay(d) + ' — ' + (free ? free + ' of 2 slots open' : 'fully booked'));
-        if (isoStr === selKey) cell.setAttribute('aria-current', 'date');
-      }
-      grid.appendChild(cell);
+  function initCal(){
+    if (typeof window.flatpickr === 'undefined'){
+      // graceful degradation if the CDN is blocked
+      $('bkFallback').hidden = false;
+      $('bkDay').textContent = 'Prefer a call? Reach us any time to book.';
+      return;
     }
-  }
-
-  function renderSlots(isoStr){
-    const d = parseIso(isoStr);
-    sdayEl.innerHTML = fmtDay(d) + ' <span>— pick a time window</span>';
-    rowEl.innerHTML = '';
-    selSlot = null;
-    SLOTS.forEach((s, i) => {
-      const t = taken(isoStr, i);
-      const b = document.createElement('button');
-      b.type = 'button'; b.className = 'slot'; b.disabled = t;
-      b.innerHTML = '<b>' + s.name + '</b><small>' + s.time + '</small>' +
-        '<span class="tag">' + (t ? 'Booked' : 'Available') + '</span>';
-      if (!t) b.onclick = () => {
-        selSlot = i;
-        rowEl.querySelectorAll('.slot').forEach(x => x.classList.remove('sel'));
-        b.classList.add('sel');
-        okBtn.disabled = false;
-      };
-      rowEl.appendChild(b);
+    fp = window.flatpickr('#calAnchor', {
+      inline: true,
+      minDate: 'today',
+      maxDate: new Date(Date.now() + 1000*60*60*24*90), // ~3 months out
+      // block weekends, past days, and fully-booked days from selection
+      disable: [ d => !isBusinessDay(d) || dayState(d) === 'full' ],
+      onDayCreate: function(dObj, dStr, inst, dayElem){
+        if (dayElem.classList.contains('prevMonthDay') || dayElem.classList.contains('nextMonthDay')) return;
+        const date = dayElem.dateObj;
+        if (!isBusinessDay(date) || date < startOfToday()) return; // leave weekends/past in default disabled look
+        const st = dayState(date);
+        dayElem.classList.add('av-' + st);
+        const dot = document.createElement('span');
+        dot.className = 'av-dot';
+        dayElem.appendChild(dot);
+        const nice = { free:'openings available', some:'filling up', full:'fully booked' }[st];
+        dayElem.setAttribute('aria-label', dayElem.getAttribute('aria-label') + ' — ' + nice);
+      },
+      onChange: function(dates){ if (dates[0]) selectDay(dates[0]); }
     });
-    doneEl.classList.remove('show'); doneEl.textContent = '';
-    okBtn.disabled = true;
-    wrapEl.classList.add('show');
   }
 
-  grid.onclick = e => {
-    const cell = e.target.closest('.cal-day.avail');
-    if (!cell || !cell.dataset.iso) return;
-    selKey = cell.dataset.iso;
-    renderGrid();
-    renderSlots(selKey);
-    wrapEl.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'nearest' });
-  };
+  function selectDay(d){
+    selDate = d; selSlot = null;
+    $('bkDone').hidden = true;
+    $('bkConfirm').hidden = false;
+    $('bkConfirm').disabled = true;
+    $('bkConfirm').textContent = 'Request this time';
+    const label = d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+    $('bkDay').innerHTML = 'Open windows for <b>' + label + '</b>';
 
-  prevB.onclick = () => { if (prevB.disabled) return; if (--viewM < 0){ viewM = 11; viewY--; } renderGrid(); };
-  nextB.onclick = () => { if (++viewM > 11){ viewM = 0; viewY++; } renderGrid(); };
-  document.getElementById('calToday').onclick = () => { viewY = today.getFullYear(); viewM = today.getMonth(); renderGrid(); };
+    const r = remainFor(d);
+    const slots = $('bkSlots');
+    slots.innerHTML = '';
+    SLOTS.forEach(s => {
+      const left = r[s.id];
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'bk-slot';
+      let stCls, stTxt;
+      if (left <= 0){ stCls = 'no'; stTxt = 'Fully booked'; btn.disabled = true; }
+      else if (left === 1){ stCls = 'low'; stTxt = '1 slot left'; }
+      else { stCls = 'ok'; stTxt = left + ' slots open'; }
+      btn.innerHTML = '<span class="lab">' + s.label +
+        '<span class="tm">' + s.time + '</span></span>' +
+        '<span class="st ' + stCls + '">' + stTxt + '</span>';
+      btn.onclick = () => {
+        if (btn.disabled) return;
+        selSlot = s;
+        slots.querySelectorAll('.bk-slot').forEach(x => x.classList.remove('sel'));
+        btn.classList.add('sel');
+        $('bkConfirm').disabled = false;
+      };
+      slots.appendChild(btn);
+    });
+  }
 
-  okBtn.onclick = () => {
-    if (selKey == null || selSlot == null) return;
-    const bookedKey = selKey, s = SLOTS[selSlot];
-    userBooked.add(bookedKey + '|' + selSlot);
-    renderGrid();                 // recolor the day now that a slot is taken
-    renderSlots(bookedKey);       // re-render slots so the booked one greys out (clears done)
-    doneEl.textContent = '✓ Requested: ' + fmtDay(parseIso(bookedKey)) + ' · ' + s.name +
-      ' (' + s.time + '). We’ll call to confirm within one business hour.';
-    doneEl.classList.add('show');
-  };
+  function confirm(){
+    if (!selDate || !selSlot) return;
+    const label = selDate.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+    $('bkSlots').innerHTML = '';
+    $('bkConfirm').hidden = true;
+    $('bkDay').innerHTML = 'Inspection requested';
+    const done = $('bkDone');
+    done.hidden = false;
+    done.innerHTML = '✓ Requested: ' + label + ' · ' + selSlot.time +
+      '<span class="sm">Nothing is charged today.</span>';
+  }
 
-  // called by the pricing handler once the final local price is revealed
-  window.__revealCalendar = function(){
-    renderGrid();
-    const cal = document.getElementById('calBook');
-    cal.classList.add('show');
-    setTimeout(() => cal.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' }), reduceMotion ? 0 : 280);
+  window.revealBooking = function(){
+    const el = $('booking');
+    if (!el) return;
+    el.classList.add('show');
+    if (!inited){ inited = true; initCal(); $('bkConfirm').onclick = confirm; }
+    // gentle scroll into view once the reveal has painted
+    setTimeout(() => {
+      el.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+    }, reduceMotion ? 0 : 260);
   };
-})();</script>
+})();
+</script>
 </body>
 </html>
