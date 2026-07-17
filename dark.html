@@ -510,10 +510,15 @@ document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-/* ---- pricing ---- */
-const RATE_SQFT = 4.25;   // $ per sq ft (rough plumbing)
-const PER_BATH  = 2900;   // $ per full bathroom
-const BASE      = 850;    // permit + setup
+/* ---- pricing ----
+   Defaults live here; pricing.html (internal maintenance page) can store
+   per-device overrides in localStorage.ksbPricing for on-site testing. */
+const PRICING_DEFAULTS = { base: 850, rateSqft: 4.25, perBath: 2900, spread: 0.15 };
+let PRICING = { ...PRICING_DEFAULTS };
+try { const o = JSON.parse(localStorage.getItem('ksbPricing') || 'null'); if (o) PRICING = { ...PRICING, ...o }; } catch (e) {}
+const RATE_SQFT = PRICING.rateSqft;   // $ per sq ft (rough plumbing)
+const PER_BATH  = PRICING.perBath;    // $ per full bathroom
+const BASE      = PRICING.base;       // permit + setup
 
 const ZIP3 = {
   "941":["San Francisco, CA",1.62],"940":["Peninsula, CA",1.55],"900":["Los Angeles, CA",1.44],
@@ -578,8 +583,8 @@ document.getElementById('localBtn').onclick = () => {
   const pct = Math.round((r.index - 1) * 100);
   document.getElementById('locRegion').textContent =
     r.label + ' · ' + (pct === 0 ? 'at national average' : (pct > 0 ? pct + '% above average' : Math.abs(pct) + '% below average'));
-  document.getElementById('locLo').textContent = fmt(local * 0.85);
-  document.getElementById('locHi').textContent = fmt(local * 1.15);
+  document.getElementById('locLo').textContent = fmt(local * (1 - PRICING.spread));
+  document.getElementById('locHi').textContent = fmt(local * (1 + PRICING.spread));
   const dest = validEmail(email) ? email : (phone.length >= 7 ? phone : '');
   document.getElementById('locConfirm').innerHTML = dest
     ? '✓ A copy of your detailed quote is on its way to <b>' + dest + '</b>.'

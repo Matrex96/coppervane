@@ -105,19 +105,22 @@ function sha256(ascii) {
   }
   return result;
 }
+/* ?next=<page>.html sends you back to the page that bounced you here (whitelist: plain html filenames only) */
+const nextParam = new URLSearchParams(location.search).get('next');
+const dest = /^[a-z0-9-]+\.html$/.test(nextParam || '') ? nextParam : 'home.html';
 document.getElementById('f').onsubmit = e => {
   e.preventDefault();
   const u = document.getElementById('u').value.trim().toLowerCase();
   const p = document.getElementById('p').value;
   if (sha256(u) === USER_H && sha256(p) === PASS_H) {
     sessionStorage.setItem('ksbAuth', 'yes');
-    location.replace('home.html');
+    location.replace(dest);
   } else {
     document.getElementById('err').textContent = 'Wrong username or password.';
     document.getElementById('p').value = '';
   }
 };
-if (sessionStorage.getItem('ksbAuth') === 'yes') location.replace('home.html');
+if (sessionStorage.getItem('ksbAuth') === 'yes') location.replace(dest);
 </script>
 </body>
 </html>

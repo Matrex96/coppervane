@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<script>if (sessionStorage.getItem('ksbAuth') !== 'yes') location.replace('index.html?next=pricing.html');</script>
+<title>KSB Repipe — Pricing Control</title>
+<link rel="icon" href="images/logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #1b242f;
+    --panel:   #242f3c;
+    --panel-2: #1f2a35;
+    --line:    #374654;
+    --line-2:  #2c3947;
+    --ink:     #eef3f6;
+    --soft:    #a2b4c1;
+    --faint:   #74869a;
+    --accent:  #d98a52;
+    --accent-2:#b96b39;
+    --gold:    #e6b455;
+    --green:   #5aab74;
+    --sans:    "Hanken Grotesk", system-ui, sans-serif;
+    --serif:   "Fraunces", Georgia, serif;
+    --mono:    ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
+    --radius:  16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: var(--sans); line-height: 1.55;
+    background-image: radial-gradient(1200px 500px at 50% -10%, rgba(217,138,82,.07), transparent 70%);
+    min-height: 100vh;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 22px 18px 70px; }
+
+  /* ---- header ---- */
+  header { display: flex; align-items: center; gap: 12px; padding: 6px 0 22px; }
+  header img { height: 34px; display: block; }
+  .hd-t { font-weight: 800; letter-spacing: .01em; font-size: 1.02rem; }
+  .hd-badge {
+    margin-left: auto; font-size: .68rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+    color: var(--gold); border: 1px solid rgba(230,180,85,.4); border-radius: 999px; padding: 4px 10px;
+    background: rgba(230,180,85,.08); white-space: nowrap;
+  }
+  h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.9rem, 7vw, 2.5rem); letter-spacing: -.02em; line-height: 1.1; margin-bottom: 8px; }
+  h1 em { font-style: normal; color: var(--accent); }
+  .lede { color: var(--soft); font-size: .98rem; max-width: 46ch; margin-bottom: 26px; }
+
+  /* ---- cards ---- */
+  .card { background: var(--panel); border: 1px solid var(--line-2); border-radius: var(--radius); padding: 20px 18px; margin-bottom: 18px; }
+  .card h2 { font-family: var(--serif); font-weight: 500; font-size: 1.3rem; letter-spacing: -.01em; margin-bottom: 4px; }
+  .card .sub { color: var(--soft); font-size: .88rem; margin-bottom: 16px; }
+  .kicker { color: var(--accent); font-size: .7rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 6px; }
+
+  /* ---- formula display ---- */
+  .formula {
+    background: var(--panel-2); border: 1px solid var(--line-2); border-radius: 12px;
+    padding: 16px 14px 16px 34px; font-family: var(--serif); font-size: 1.02rem; line-height: 1.8;
+    text-indent: -20px;
+  }
+  .formula > div { margin: 2px 0; }
+  .formula .v { color: var(--accent); font-weight: 600; }
+  .formula .op { color: var(--faint); }
+  .steps { margin: 14px 0 0; padding-left: 0; list-style: none; counter-reset: st; }
+  .steps li { counter-increment: st; position: relative; padding: 10px 0 10px 40px; border-top: 1px solid var(--line-2); font-size: .92rem; color: var(--soft); }
+  .steps li:first-child { border-top: 0; }
+  .steps li::before {
+    content: counter(st); position: absolute; left: 0; top: 10px;
+    width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center;
+    background: rgba(217,138,82,.14); color: var(--accent); font-weight: 800; font-size: .8rem;
+  }
+  .steps b { color: var(--ink); font-weight: 700; }
+
+  /* ---- parameter editor ---- */
+  .param { display: flex; align-items: center; gap: 12px; padding: 13px 0; border-top: 1px solid var(--line-2); }
+  .param:first-of-type { border-top: 0; }
+  .param .lab { flex: 1; min-width: 0; }
+  .param .lab b { display: block; font-size: .95rem; font-weight: 700; }
+  .param .lab span { display: block; color: var(--faint); font-size: .78rem; margin-top: 1px; }
+  .param .def { color: var(--faint); font-size: .72rem; font-family: var(--mono); white-space: nowrap; }
+  .pin {
+    position: relative; display: flex; align-items: center;
+    background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 0 10px;
+  }
+  .pin .unit { color: var(--faint); font-size: .85rem; font-weight: 700; }
+  .pin input {
+    width: 78px; background: none; border: 0; outline: none; color: var(--ink);
+    font-family: var(--mono); font-size: 1.02rem; font-weight: 600; text-align: right;
+    padding: 10px 2px; -moz-appearance: textfield;
+  }
+  .pin input::-webkit-outer-spin-button, .pin input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .pin.changed { border-color: var(--accent); }
+  .pin.changed input { color: var(--accent); }
+
+  .btnrow { display: flex; gap: 10px; margin-top: 18px; }
+  .btn {
+    flex: 1; appearance: none; border: 0; border-radius: 12px; padding: 14px 10px;
+    font-family: var(--sans); font-weight: 800; font-size: .95rem; letter-spacing: .01em; cursor: pointer;
+    background: linear-gradient(180deg, var(--accent), var(--accent-2)); color: #16110c;
+    transition: transform .12s ease, filter .12s ease;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn.ghost { background: none; border: 1px solid var(--line); color: var(--soft); font-weight: 700; }
+  .savemsg { text-align: center; font-size: .84rem; margin-top: 12px; min-height: 1.3em; color: var(--green); font-weight: 600; opacity: 0; transition: opacity .3s; }
+  .savemsg.show { opacity: 1; }
+  .scopenote { color: var(--faint); font-size: .78rem; margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line-2); }
+  .scopenote b { color: var(--soft); }
+
+  /* ---- live preview ---- */
+  .prevgrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .prevgrid label { display: block; color: var(--faint); font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 5px; }
+  .prevgrid input {
+    width: 100%; background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px;
+    color: var(--ink); font-family: var(--mono); font-size: 1rem; font-weight: 600; padding: 10px 10px; outline: none;
+  }
+  .prevgrid input:focus { border-color: var(--accent); }
+  .out { border-top: 1px solid var(--line-2); padding-top: 14px; }
+  .out .row { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 0; font-size: .92rem; color: var(--soft); }
+  .out .row b { font-family: var(--mono); color: var(--ink); font-size: 1.02rem; font-weight: 600; }
+  .out .big { padding-top: 10px; }
+  .out .big .num { font-family: var(--serif); font-size: clamp(2.3rem, 9vw, 3rem); line-height: 1; color: var(--ink); letter-spacing: -.02em; }
+  .out .big .num .c { color: var(--accent); font-size: .45em; vertical-align: top; margin-right: .05em; }
+  .out .rng { color: var(--soft); font-size: .86rem; margin-top: 6px; }
+  .out .rng b { color: var(--ink); font-weight: 600; }
+  .out .region { color: var(--accent); font-weight: 700; font-size: .78rem; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 4px; }
+  .math { font-family: var(--mono); font-size: .74rem; color: var(--faint); margin-top: 12px; line-height: 1.7; overflow-wrap: anywhere; }
+
+  /* ---- zip table ---- */
+  details { border-top: 1px solid var(--line-2); margin-top: 4px; }
+  details summary { cursor: pointer; padding: 13px 0; font-weight: 700; font-size: .93rem; color: var(--soft); list-style: none; display: flex; align-items: center; }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::after { content: "+"; margin-left: auto; color: var(--accent); font-size: 1.2rem; font-weight: 400; transition: transform .2s; }
+  details[open] summary::after { transform: rotate(45deg); }
+  .ziprow { display: flex; justify-content: space-between; padding: 7px 0; font-size: .86rem; border-top: 1px solid var(--line-2); }
+  .ziprow span { color: var(--soft); }
+  .ziprow .z { font-family: var(--mono); color: var(--faint); margin-right: 10px; }
+  .ziprow b { font-family: var(--mono); font-weight: 600; }
+  .ziprow b.up { color: var(--accent); }
+  .ziprow b.dn { color: var(--green); }
+  footer { text-align: center; color: var(--faint); font-size: .78rem; margin-top: 30px; }
+  footer a { color: var(--soft); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <img src="images/logo-dark.png" alt="KSB Repipe">
+    <div class="hd-t">KSB&nbsp;Repipe</div>
+    <div class="hd-badge">Internal · Maintenance</div>
+  </header>
+
+  <h1>Pricing <em>control</em></h1>
+  <p class="lede">This page shows the exact formula behind the instant estimate on the website — and lets you tune its numbers and preview the result before anything goes live.</p>
+
+  <!-- ================= how the price is built ================= -->
+  <section class="card">
+    <div class="kicker">The formula</div>
+    <h2>How every estimate is built</h2>
+    <p class="sub">Two steps: a national base price from the house itself, then a local adjustment from the ZIP code.</p>
+
+    <div class="formula" id="fml">
+      <div>National <span class="op">=</span> <span class="v" id="fBase">$850</span> <span class="op">+</span> sqft <span class="op">×</span> <span class="v" id="fRate">$4.25</span> <span class="op">+</span> baths <span class="op">×</span> <span class="v" id="fBath">$2,900</span></div>
+      <div>Local <span class="op">=</span> National <span class="op">×</span> <span class="v">ZIP index</span></div>
+      <div>Shown range <span class="op">=</span> Local <span class="op">±</span> <span class="v" id="fSpread">15%</span></div>
+    </div>
+
+    <ol class="steps">
+      <li><b>Base fee</b> — a fixed amount covering permits, setup and mobilization. Charged once per job.</li>
+      <li><b>Rate per square foot</b> — covers the rough plumbing that scales with the size of the house.</li>
+      <li><b>Per bathroom</b> — each full bathroom adds a fixed amount for its fixtures and tie-ins.</li>
+      <li><b>ZIP index</b> — the national price is multiplied by a local cost-of-labor index (e.g. San Francisco ×1.62, Plains ×0.99). Known metros match on the first 3 ZIP digits; everything else falls back to a broad region on the first digit.</li>
+      <li><b>Range &amp; rounding</b> — the customer sees the local price plus a ± band, and all figures are rounded to the nearest $10.</li>
+    </ol>
+  </section>
+
+  <!-- ================= parameter editor ================= -->
+  <section class="card">
+    <div class="kicker">Adjust</div>
+    <h2>Tune the numbers</h2>
+    <p class="sub">Orange means you changed it from the built-in default.</p>
+
+    <div class="param">
+      <div class="lab"><b>Base fee</b><span>permit + setup, once per job</span></div>
+      <div class="def" id="dBase"></div>
+      <div class="pin" id="pBase"><span class="unit">$</span><input type="number" id="iBase" inputmode="decimal" step="10" min="0"></div>
+    </div>
+    <div class="param">
+      <div class="lab"><b>Rate per sq ft</b><span>rough plumbing</span></div>
+      <div class="def" id="dRate"></div>
+      <div class="pin" id="pRate"><span class="unit">$</span><input type="number" id="iRate" inputmode="decimal" step="0.05" min="0"></div>
+    </div>
+    <div class="param">
+      <div class="lab"><b>Per bathroom</b><span>fixtures + tie-ins</span></div>
+      <div class="def" id="dBath"></div>
+      <div class="pin" id="pBath"><span class="unit">$</span><input type="number" id="iBath" inputmode="decimal" step="50" min="0"></div>
+    </div>
+    <div class="param">
+      <div class="lab"><b>Range band</b><span>± shown around the local price</span></div>
+      <div class="def" id="dSpread"></div>
+      <div class="pin" id="pSpread"><input type="number" id="iSpread" inputmode="decimal" step="1" min="0" max="50" style="width:56px"><span class="unit">%</span></div>
+    </div>
+
+    <div class="btnrow">
+      <button class="btn" id="saveBtn">Save</button>
+      <button class="btn ghost" id="resetBtn">Reset to defaults</button>
+    </div>
+    <div class="savemsg" id="saveMsg"></div>
+
+    <p class="scopenote"><b>Where do saves go?</b> Saved values live on <b>this device</b> (browser storage) and the estimator on this device uses them immediately — perfect for trying numbers on your phone. To make new numbers live for every visitor, the defaults in the site code get updated with these values.</p>
+  </section>
+
+  <!-- ================= live preview ================= -->
+  <section class="card">
+    <div class="kicker">Preview</div>
+    <h2>Try it on a sample house</h2>
+    <p class="sub">Recalculates instantly with the numbers above — exactly the math the website runs.</p>
+
+    <div class="prevgrid">
+      <div><label for="sSqft">Sq ft</label><input type="number" id="sSqft" inputmode="numeric" value="2000"></div>
+      <div><label for="sBaths">Baths</label><input type="number" id="sBaths" inputmode="numeric" value="2"></div>
+      <div><label for="sZip">ZIP</label><input type="text" id="sZip" inputmode="numeric" maxlength="5" value="94110"></div>
+    </div>
+
+    <div class="out">
+      <div class="row"><span>National estimate</span><b id="oNat">—</b></div>
+      <div class="big">
+        <div class="region" id="oRegion">—</div>
+        <div class="num"><span class="c">$</span><span id="oLocal">—</span></div>
+        <div class="rng">Shown range: <b id="oLo">—</b> – <b id="oHi">—</b></div>
+      </div>
+      <div class="math" id="oMath"></div>
+    </div>
+  </section>
+
+  <!-- ================= zip table ================= -->
+  <section class="card">
+    <div class="kicker">Reference</div>
+    <h2>Local cost indexes</h2>
+    <p class="sub">Read-only here — these live in the site code. ×1.00 = national average.</p>
+    <details open>
+      <summary>Known metros (first 3 ZIP digits)</summary>
+      <div id="zipMetros"></div>
+    </details>
+    <details>
+      <summary>Region fallback (first ZIP digit)</summary>
+      <div id="zipRegions"></div>
+    </details>
+  </section>
+
+  <footer>KSB Repipe · internal pricing maintenance · <a href="dark.html">back to the website</a></footer>
+</div>
+
+<script>
+/* Defaults MUST mirror dark.html — that file is the source of truth for what visitors get. */
+const DEFAULTS = { base: 850, rateSqft: 4.25, perBath: 2900, spread: 0.15 };
+const LS_KEY = 'ksbPricing';
+
+const ZIP3 = {
+  "941":["San Francisco, CA",1.62],"940":["Peninsula, CA",1.55],"900":["Los Angeles, CA",1.44],
+  "951":["San Jose, CA",1.58],"981":["Seattle, WA",1.38],"100":["Manhattan, NY",1.66],
+  "112":["Brooklyn, NY",1.52],"021":["Boston, MA",1.47],"200":["Washington, DC",1.42],
+  "606":["Chicago, IL",1.31],"331":["Miami, FL",1.18],"787":["Austin, TX",1.16],
+  "770":["Houston, TX",1.12],"852":["Phoenix, AZ",1.08],"802":["Denver, CO",1.22],
+  "891":["Las Vegas, NV",1.12],"300":["Atlanta, GA",1.09],"370":["Nashville, TN",1.07],
+  "972":["Portland, OR",1.30],
+};
+const REGION1 = { "0":["Northeast",1.26],"1":["Northeast",1.23],"2":["Mid-Atlantic",1.05],
+  "3":["Southeast",1.02],"4":["Midwest",0.98],"5":["Upper Midwest",0.97],"6":["Plains",0.99],
+  "7":["South Central",1.03],"8":["Mountain West",1.11],"9":["West Coast",1.33] };
+function lookupZip(z){ const k=String(z).slice(0,3);
+  if (ZIP3[k]) return { label:ZIP3[k][0], index:ZIP3[k][1] };
+  const r=REGION1[String(z)[0]]; return { label:r?r[0]:"United States", index:r?r[1]:1.0 }; }
+
+const $ = id => document.getElementById(id);
+const fmt = n => '$' + (Math.round(n/10)*10).toLocaleString('en-US');
+const fnum = v => { const n = parseFloat(v); return Number.isFinite(n) && n >= 0 ? n : null; };
+
+function loadSaved(){
+  try { const o = JSON.parse(localStorage.getItem(LS_KEY) || 'null'); return o ? { ...DEFAULTS, ...o } : { ...DEFAULTS }; }
+  catch(e){ return { ...DEFAULTS }; }
+}
+
+/* ---- fill editor from saved state ---- */
+const saved = loadSaved();
+$('iBase').value   = saved.base;
+$('iRate').value   = saved.rateSqft;
+$('iBath').value   = saved.perBath;
+$('iSpread').value = Math.round(saved.spread * 100);
+$('dBase').textContent   = 'default $' + DEFAULTS.base;
+$('dRate').textContent   = 'default $' + DEFAULTS.rateSqft;
+$('dBath').textContent   = 'default $' + DEFAULTS.perBath.toLocaleString('en-US');
+$('dSpread').textContent = 'default ' + Math.round(DEFAULTS.spread*100) + '%';
+
+function currentParams(){
+  return {
+    base:     fnum($('iBase').value)   ?? DEFAULTS.base,
+    rateSqft: fnum($('iRate').value)   ?? DEFAULTS.rateSqft,
+    perBath:  fnum($('iBath').value)   ?? DEFAULTS.perBath,
+    spread:  (fnum($('iSpread').value) ?? DEFAULTS.spread*100) / 100,
+  };
+}
+
+function render(){
+  const p = currentParams();
+  /* formula card */
+  $('fBase').textContent   = '$' + p.base.toLocaleString('en-US');
+  $('fRate').textContent   = '$' + p.rateSqft.toLocaleString('en-US');
+  $('fBath').textContent   = '$' + p.perBath.toLocaleString('en-US');
+  $('fSpread').textContent = Math.round(p.spread*100) + '%';
+  /* changed markers */
+  $('pBase').classList.toggle('changed',   p.base     !== DEFAULTS.base);
+  $('pRate').classList.toggle('changed',   p.rateSqft !== DEFAULTS.rateSqft);
+  $('pBath').classList.toggle('changed',   p.perBath  !== DEFAULTS.perBath);
+  $('pSpread').classList.toggle('changed', Math.abs(p.spread - DEFAULTS.spread) > 1e-9);
+  /* preview */
+  const sqft  = fnum($('sSqft').value)  ?? 0;
+  const baths = fnum($('sBaths').value) ?? 0;
+  const zip   = $('sZip').value.replace(/\D/g,'');
+  const nat = p.base + sqft * p.rateSqft + baths * p.perBath;
+  const r = lookupZip(zip.padEnd(1,'0'));
+  const local = nat * r.index;
+  const pct = Math.round((r.index - 1) * 100);
+  $('oNat').textContent = fmt(nat);
+  $('oRegion').textContent = r.label + ' · ' + (pct === 0 ? 'at national average' : (pct > 0 ? pct + '% above average' : Math.abs(pct) + '% below average'));
+  $('oLocal').textContent = (Math.round(local/10)*10).toLocaleString('en-US');
+  $('oLo').textContent = fmt(local * (1 - p.spread));
+  $('oHi').textContent = fmt(local * (1 + p.spread));
+  $('oMath').innerHTML =
+    'national = ' + p.base + ' + ' + sqft + '×' + p.rateSqft + ' + ' + baths + '×' + p.perBath + ' = ' + Math.round(nat).toLocaleString('en-US') +
+    '<br>local &nbsp;&nbsp; = ' + Math.round(nat).toLocaleString('en-US') + ' × ' + r.index.toFixed(2) + ' = ' + Math.round(local).toLocaleString('en-US');
+}
+
+['iBase','iRate','iBath','iSpread','sSqft','sBaths','sZip'].forEach(id => $(id).addEventListener('input', render));
+$('sZip').addEventListener('input', () => { $('sZip').value = $('sZip').value.replace(/\D/g,'').slice(0,5); });
+
+/* ---- save / reset ---- */
+function flashMsg(t){ const m = $('saveMsg'); m.textContent = t; m.classList.add('show'); setTimeout(() => m.classList.remove('show'), 2600); }
+$('saveBtn').onclick = () => {
+  localStorage.setItem(LS_KEY, JSON.stringify(currentParams()));
+  flashMsg('✓ Saved — the estimator on this device now uses these numbers.');
+};
+$('resetBtn').onclick = () => {
+  localStorage.removeItem(LS_KEY);
+  $('iBase').value = DEFAULTS.base; $('iRate').value = DEFAULTS.rateSqft;
+  $('iBath').value = DEFAULTS.perBath; $('iSpread').value = Math.round(DEFAULTS.spread*100);
+  render(); flashMsg('✓ Back to the built-in defaults.');
+};
+
+/* ---- zip tables ---- */
+function zipRows(el, obj){
+  el.innerHTML = Object.entries(obj)
+    .sort((a,b) => b[1][1] - a[1][1])
+    .map(([k, [label, idx]]) => {
+      const cls = idx > 1 ? 'up' : (idx < 1 ? 'dn' : '');
+      return '<div class="ziprow"><span><span class="z">' + k + '</span>' + label + '</span><b class="' + cls + '">×' + idx.toFixed(2) + '</b></div>';
+    }).join('');
+}
+zipRows($('zipMetros'), ZIP3);
+zipRows($('zipRegions'), REGION1);
+
+render();
+</script>
+</body>
+</html>
